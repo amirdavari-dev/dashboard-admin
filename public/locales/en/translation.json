@@ -1,0 +1,61 @@
+{
+  "fak":"Fidar Arian Kavir Company - install mine tools",
+  "register": {
+    "register": "Register",
+    "title": "Fidar arian kavir company",
+    "introMessage": "Register to use the services of fidar arian kavir company",
+    "mobile": "Mobile",
+    "password": "Password",
+    "repeatPassword": "Repeat Password",
+    "alreadyRegistered": "Already Registered",
+    "signin": "Sign in",
+    "saving": "Saving ...",
+    "successOperation": "Your changes have been successfully saved",
+    "validation": {
+      "mobileRequired": "Mobile is required",
+      "passwordRequired": "Password is required",
+      "repeatPasswordRequired": "Repeat Password is Required",
+      "mobileLength": "Mobile number must be 11 digits",
+      "notMatching": "Password do no match",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "duplicateUsername": "This username is already taken",
+      "titleError": "Error"
+    }
+  },
+  "login": {
+    "title": "Fidar arian kavir company",
+    "introMessage": "To log in,you need to use your mobile phone and password",
+    "signinin": "Signin in ...",
+    "signin": "Sign in",
+    "register": "Register",
+    "mobile": "Mobile",
+    "password": "Password",
+    "areNotRegistered": "You're not registered?",
+    "validation": {
+      "mobileRequired": "Mobile is required",
+      "passwordRequired": "Password is required",
+      "IncorrectUserNameOrPassword": "The username or password is incorrect",
+      "mobileLength": "Mobile number must be 11 digits",
+      "titleError": "Error"
+    }
+  },
+  "mainLayout": {
+    "sidebar": {
+      "subTitle": "Fidar Arian Kavir Company",
+      "courceManagement": "Cource Management",
+      "allCources": "All Cources",
+      "courcesCategory": "Cources Category",
+      "courcesDiscount": "Cources Discount",
+      "userManagement": "User Management",
+      "teacherManagement": "Teacher Management",
+      "studentManagement": "Student Management",
+      "blogManagement": "BLog MAnagement",
+      "tagManagement": "TagManagement",
+      "postManagement": "PostManagement"
+    }
+  },
+  "categoryList":{
+    "DeleteIsNotPossible": "It is not possible to delete this category",
+    "DuplicateCategory" : "The category is duplicate"
+  }
+}
