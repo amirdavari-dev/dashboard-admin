@@ -9,7 +9,16 @@ export const httpInterceptedService = axios.create({
 });
 httpInterceptedService.interceptors.request.use(
   async (config: { headers: any }) => {
-    const token = localStorage.getItem("token");
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts: string[] = value.split(`; ${name}=`);
+      if (parts.length === 2) {
+        const result = parts.pop()?.split(";").shift();
+        return result ?? null;
+      }
+    };
+
+    const token = getCookie("token");
     if (token) {
       config.headers = {
         authorization: `Bearer ${token}`,
@@ -19,12 +28,12 @@ httpInterceptedService.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-httpInterceptedService.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response.status === 401) {
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  }
-);
+// httpInterceptedService.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     if (error.response.status === 401) {
+//       window.location.href = "/login";
+//     }
+//     return Promise.reject(error);
+//   }
+// );

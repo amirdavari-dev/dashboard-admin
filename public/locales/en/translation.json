@@ -1,34 +1,11 @@
 {
-  "fak":"Fidar Arian Kavir Company - install mine tools",
-  "register": {
-    "register": "Register",
-    "title": "Fidar arian kavir company",
-    "introMessage": "Register to use the services of fidar arian kavir company",
-    "mobile": "Mobile",
-    "password": "Password",
-    "repeatPassword": "Repeat Password",
-    "alreadyRegistered": "Already Registered",
-    "signin": "Sign in",
-    "saving": "Saving ...",
-    "successOperation": "Your changes have been successfully saved",
-    "validation": {
-      "mobileRequired": "Mobile is required",
-      "passwordRequired": "Password is required",
-      "repeatPasswordRequired": "Repeat Password is Required",
-      "mobileLength": "Mobile number must be 11 digits",
-      "notMatching": "Password do no match",
-      "passwordTooShort": "Password must be at least 6 characters",
-      "duplicateUsername": "This username is already taken",
-      "titleError": "Error"
-    }
-  },
+  "azpo": "Azpo Real Esatate",
   "login": {
-    "title": "Fidar arian kavir company",
+    "title": "Azpo Real Estate Company",
     "introMessage": "To log in,you need to use your mobile phone and password",
     "signinin": "Signin in ...",
     "signin": "Sign in",
-    "register": "Register",
-    "mobile": "Mobile",
+    "mobile": "Username",
     "password": "Password",
     "areNotRegistered": "You're not registered?",
     "validation": {
@@ -41,21 +18,63 @@
   },
   "mainLayout": {
     "sidebar": {
-      "subTitle": "Fidar Arian Kavir Company",
-      "courceManagement": "Cource Management",
-      "allCources": "All Cources",
-      "courcesCategory": "Cources Category",
-      "courcesDiscount": "Cources Discount",
-      "userManagement": "User Management",
-      "teacherManagement": "Teacher Management",
-      "studentManagement": "Student Management",
-      "blogManagement": "BLog MAnagement",
-      "tagManagement": "TagManagement",
-      "postManagement": "PostManagement"
+      "header" : "Azpo Data Manage",
+      "allproperties": "All Property",
+      "categoryProperty" : "Manage Properties"
+    },
+    "showToastLang" : "Please select your desired language before entering the add page"
+  },
+  "properties": {
+    "crudProperty": {
+      "title": "Title",
+      "location": "Location",
+      "area": "Area",
+      "price": "Price",
+      "baths": "Baths",
+      "beds": "Beds",
+      "sqt": "Sqt",
+      "type": "Type",
+      "tag" : "Tag",
+      "submitPending": "Sending...",
+      "submitSend" : "Send",
+      "isError" : "There was a problem adding",
+      "isInsert" : "The operation was successful Redirecting...",
+      "placeholder" : "Enter Value",
+      "distance" : {
+        "shop" : "Distance to Shopping (Ex 5)km",
+        "hospital" : "Distance to Hospital (Ex 5)km",
+        "airport" : "Distance to Airport (Ex 5)km" 
+      },
+      "attachment" : {
+        "download" : "Download Free Brochure(Link)"
+      },
+      "buyVideo" : "Buy this property(Link)",
+      "availability" : "Availability of the property(Link)",
+      "detailsDesc" : "More Details"
+    },
+    "submitForms":{
+      "addProperty" : {
+        "titleReqError" : "Please Enter Title Value",
+        "locationReqError" : "Please Select Location",
+        "areaReqError" : "Please Select Area",
+        "priceReqError" : "Please Enter Price Value",
+        "bathsReqError" : "Please Enter Baths",
+        "bathsLengthError" : "ُBaths Should be between 1 and 5",
+        "bedsReqError" : "Please Enter Beds",
+        "bedsLengthError" : "ُBeds Should be between 1 and 5",
+        "sqtReqError" : "Please enter Sqt",
+        "typeReqError"  : "Please Select type",
+        "distanceReqError" : "Please Enter Distance Value with km",
+        "descReqError" : "Please Write Description For Property"
+      }
+    },
+    "mainData": {
+      "addProperty" : "Add Property",
+      "showAlert" : "The houses will be displayed in the next updates"
     }
   },
-  "categoryList":{
+  "categoryList": {
     "DeleteIsNotPossible": "It is not possible to delete this category",
-    "DuplicateCategory" : "The category is duplicate"
+    "DuplicateCategory": "The category is duplicate"
   }
 }

@@ -14,7 +14,7 @@ const TopNav = () => {
     navigate("/login");
   };
   return (
-    <nav className="flex justify-between items-center sticky top-0 bg-white dark:bg-slate-800 border-b border-slate-300 dark:border-slate-500 z-10">
+    <nav className="flex justify-between items-center sticky top-0 bg-white dark:bg-slate-800 border-b border-slate-300 dark:border-slate-500 z-50">
       <div>
         <button
           className="mx-3 dark:text-white hover:scale-110 transition-all"

@@ -1,18 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 import Login, { LoginAction } from "./features/identity/component/login";
-import Register, {
-  registerAction,
-} from "./features/identity/component/register";
 import IdentityLayout from "./layouts/identity-layouts";
 import MainLayout from "./layouts/mainLayout/mainLayout";
-import Courses, { coursesLoader } from "./pages/courses";
-import CourseCategories, { categoriesLoader } from "./pages/course-categories";
-import CourseDetails, {
-  courseDetailsLoader,
-} from "./features/courses/components/course-details";
-import { CategoryProvider } from "./features/categories/ctegory-context";
 import NotFound from "./pages/notFound";
 import UnhandledException from "./pages/unhandle-exeption";
+import AddProperty from "./pages/add-property";
+import { getAddData } from "./controller/addPropertyloader";
+import Properties from "./pages/properties";
+import { getRealEstates } from "./controller/getRealEstates";
 
 const Router = createBrowserRouter([
   {
@@ -21,23 +16,16 @@ const Router = createBrowserRouter([
     errorElement: <UnhandledException />,
     children: [
       {
-        element: <Courses />,
+        element: <Properties />,
         index: true,
-        loader: coursesLoader,
+        loader : getRealEstates
       },
       {
-        element: (
-          <CategoryProvider>
-            <CourseCategories />
-          </CategoryProvider>
-        ),
-        path: "course-categories",
-        loader: categoriesLoader,
-      },
-      {
-        element: <CourseDetails />,
-        path: "courses/:id",
-        loader: courseDetailsLoader,
+        path: "add-property",
+        element: <AddProperty />,
+        loader : getAddData,
+        // action : insertProperty,
+        errorElement: <AddProperty />,
       },
     ],
   },
@@ -49,12 +37,6 @@ const Router = createBrowserRouter([
         element: <Login />,
         action: LoginAction,
         errorElement: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-        action: registerAction,
-        errorElement: <Register />,
       },
     ],
   },

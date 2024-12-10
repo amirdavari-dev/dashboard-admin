@@ -12,7 +12,7 @@ const Course = ({
   numOfReviews,
 }: ListDataType) => {
   return (
-    <div className="bg-white dark:bg-slate-700 rounded-lg overflow-hidden shadow-md col-span-12 xs:col-span-6 sm:col-span-4 lg:col-span-3 xl:col-span-3 2xl:col-span-2 hover:bg-slate-200 hover:scale-105 transition-all group">
+    <div className="bg-white dark:bg-slate-700 rounded-lg overflow-hidden shadow-md col-span-12 xs:col-span-6 sm:col-span-4 lg:col-span-3 xl:col-span-3 2xl:col-span-3 hover:bg-slate-200 hover:scale-105 transition-all group">
       <div>
         <img src={coverImageUrl} alt={`title-cover${title}-list`} />
       </div>

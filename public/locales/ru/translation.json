@@ -1,0 +1,81 @@
+{
+  "azpo": "Азпо Недвижимость",
+  "login": {
+    "title": "Azpo Real Estate Company",
+    "introMessage": "To log in,you need to use your mobile phone and password",
+    "signinin": "Signin in ...",
+    "signin": "Sign in",
+    "mobile": "Mobile",
+    "password": "Password",
+    "areNotRegistered": "You're not registered?",
+    "validation": {
+      "mobileRequired": "Mobile is required",
+      "passwordRequired": "Password is required",
+      "IncorrectUserNameOrPassword": "The username or password is incorrect",
+      "mobileLength": "Mobile number must be 11 digits",
+      "titleError": "Error"
+    }
+  },
+  "mainLayout": {
+    "sidebar": {
+      "header" : "Управление данными Азпо",
+      "allproperties": "Вся недвижимость",
+      "categoryProperty" : "Управление свойствами"
+    },
+    "showToastLang" : "Пожалуйста, выберите желаемый язык перед входом на страницу добавления."
+  },
+  "properties": {
+    "crudProperty": {
+      "title": "Заголовок",
+      "location": "Расположение",
+      "area": "Область",
+      "price": "Цена",
+      "baths": "Ванны",
+      "beds": "Кровати",
+      "sqt": "Sqt",
+      "type": "Тип",
+      "tag" : "Ярлык",
+      "submitSend": "Отправлять",
+      "submitPending": "отправка...",
+      "isError" : "Возникла проблема с добавлением",
+      "isInsert" : "Операция прошла успешно. Перенаправление...",
+      "placeholder": "Введите значение",
+      "distance": {
+        "shop": "Расстояние до магазинов (Ex 5) км",
+        "hospital" : "Расстояние до больницы (пример 5), км",
+        "airport" : "Расстояние до аэропорта (Ex 5) км" 
+      },
+      "attachment": {
+        "download": "Скачать бесплатную брошюру (ссылка)"
+      },
+      "buyVideo" : "Купить эту недвижимость (Ссылка)",
+      "availability" : "Наличие объекта(Ссылка)",
+      "detailsDesc" : "Подробнее"
+      
+    },
+    "submitForms":{
+      "addProperty" : {
+        "titleReqError" : "Пожалуйста, введите значение заголовка",
+        "locationReqError" : "Пожалуйста, выберите местоположение",
+        "areaReqError" : "Пожалуйста, выберите область",
+        "priceReqError" : "Пожалуйста, введите стоимость",
+        "bathsReqError" : "Пожалуйста, введите стоимость ванны",
+        "bathsLengthError" : "ُВанн должно быть от 1 до 5.",
+        "bedsReqError" : "Пожалуйста, укажите кровати",
+        "bedsLengthError" : "ُКроватей должно быть от 1 до 5.",
+        "sqtReqError" : "Пожалуйста, введите кв.",
+        "typeReqError"  : "Пожалуйста, выберите тип",
+        "distanceReqError" : "Пожалуйста, введите значение расстояния в км",
+        "descReqError" : "Пожалуйста, напишите описание недвижимости"
+      }
+    },
+    "mainData": {
+      "addProperty" : "Добавить недвижимость",
+      "showAlert" : "дома будут отображены в следующем обновлении"
+    }
+  },
+  "categoryList": {
+    "DeleteIsNotPossible": "It is not possible to delete this category",
+    "DuplicateCategory": "The category is duplicate"
+  }
+}

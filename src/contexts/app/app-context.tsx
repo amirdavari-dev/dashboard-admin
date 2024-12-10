@@ -16,7 +16,7 @@ interface AppContextType extends AppReducerType {
 }
 
 const initialState: AppReducerType = {
-  language: localStorage.getItem("language") || "fa",
+  language: localStorage.getItem("language") || "en",
   changeLanguage: () => {},
   changeTheme: () => {},
   theme: localStorage.getItem("theme") || "light",
@@ -39,10 +39,6 @@ const AppProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     i18n.changeLanguage(state.language);
     localStorage.setItem("language", state.language);
-    document.documentElement.setAttribute(
-      "dir",
-      state.language === "fa" ? "rtl" : "ltr"
-    );
   }, [state.language]);
   useEffect(() => {
     localStorage.setItem("theme", state.theme);

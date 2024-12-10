@@ -5,11 +5,10 @@ import {
   RegisterAction,
   RouteErrorItem,
 } from "@/types/identity";
-import fak from "@assets/images/fak.png";
+import azpo from "@assets/images/azpo.png";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-  Link,
   redirect,
   useNavigation,
   useRouteError,
@@ -33,19 +32,11 @@ const Login = () => {
     <>
       <div className="text-center">
         <div>
-          <img width={150} className="mx-auto" src={fak} alt="Logo" />
+          <img width={200} className="mx-auto" src={azpo} alt="Logo" />
         </div>
-        <h5 className="dark:text-slate-300">{t("login.title")}</h5>
+        <h5 className="dark:text-slate-300 mt-5">{t("login.title")}</h5>
         <p className="text-xs opacity-65 my-1 dark:text-slate-300">
           {t("login.introMessage")}
-        </p>
-        <p className="text-xs opacity-80 mt-3">
-          <span className="dark:text-slate-300">
-            {t("login.areNotRegistered")}{" "}
-          </span>
-          <Link className="text-blue-500 opacity-100" to="/register">
-            {t("login.register")}
-          </Link>
         </p>
       </div>
       <div className="mt-3">
@@ -118,14 +109,19 @@ const Login = () => {
           </div>
           {routeErrors && (
             <div className="text-center p-2">
-              {routeErrors.response?.data.map((index : number,error: RouteErrorItem) => {
-                return (
-                  <p key={index} className="text-rose-500 text-xs p-2 rounded-md">
-                    <span>{t("login.validation.titleError")} : </span>
-                    <span>{t(`login.validation.${error.code}`)}</span>
-                  </p>
-                );
-              })}
+              {routeErrors.response?.data.map(
+                (index: number, error: RouteErrorItem) => {
+                  return (
+                    <p
+                      key={index}
+                      className="text-rose-500 text-xs p-2 rounded-md"
+                    >
+                      <span>{t("login.validation.titleError")} : </span>
+                      <span>{t(`login.validation.${error.code}`)}</span>
+                    </p>
+                  );
+                }
+              )}
             </div>
           )}
         </form>
@@ -142,7 +138,10 @@ export const LoginAction = async ({ request }: RegisterAction) => {
   const data = Object.fromEntries(formData);
   const response = await httpService.post("/Users/login", data);
   if (response.status === 200) {
-    localStorage.setItem("token", response?.data.token);
-    return redirect('/')
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    document.cookie = `token =ddw;expires=${date};path=/`;
+    // localStorage.setItem("token", response?.data.token);
+    return redirect("/");
   }
 };
