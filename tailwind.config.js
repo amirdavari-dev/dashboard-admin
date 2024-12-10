@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+
 export default {
   content: [
     './pages/**/*.{ts,tsx}',
@@ -12,7 +12,9 @@ export default {
   theme: {
     extend:{
       screens:{
-        xs:"500px"
+        xs:"500px",
+        s1550 : "1550px",
+        s1900 : "1900px"
       },
 
     },
