@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login, { LoginAction } from "./features/identity/component/login";
-import IdentityLayout from "./layouts/identity-layouts";
+// import Login, { LoginAction } from "./features/identity/component/login";
+// import IdentityLayout from "./layouts/identity-layouts";
 import MainLayout from "./layouts/mainLayout/mainLayout";
 import NotFound from "./pages/notFound";
 import UnhandledException from "./pages/unhandle-exeption";
@@ -29,17 +29,17 @@ const Router = createBrowserRouter([
       },
     ],
   },
-  {
-    element: <IdentityLayout />,
-    children: [
-      {
-        path: "login",
-        element: <Login />,
-        action: LoginAction,
-        errorElement: <Login />,
-      },
-    ],
-  },
+  // {
+  //   element: <IdentityLayout />,
+  //   children: [
+  //     {
+  //       path: "login",
+  //       element: <Login />,
+  //       action: LoginAction,
+  //       errorElement: <Login />,
+  //     },
+  //   ],
+  // },
   {
     path: "*",
     element: <NotFound />,
