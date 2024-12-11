@@ -123,6 +123,7 @@ const AddProperty = () => {
       imagesArr: currentData.images,
       tag: currentData.tagValue,
       featuresArr: currentData.features,
+      locationMap : currentData.mapLink
     });
     toast.promise(
       response,
@@ -149,18 +150,7 @@ const AddProperty = () => {
         position: "top-center",
       }
     );
-    // if (response.status === 200) {
-    //   toast.success("Insert Is Successfully");
-    //   setTimeout(() => {
-    //     return navigate("/");
-    //   }, 3000);
-    // } else {
-    //   toast.success("Send has a problem");
-    // }
-  };
-  // const routeErrors: any = useRouteError();
-  // console.log(routeErrors);
-
+  }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-center items-center">
@@ -204,7 +194,7 @@ const AddProperty = () => {
         </div>
       </div>
       <div className="grid grid-cols-12 gap-5 mb-5 px-4">
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.title")}:
           </label>
@@ -223,7 +213,7 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.location")}:
           </label>
@@ -255,7 +245,7 @@ const AddProperty = () => {
           </Select>
         </div>
         {locationValue !== 0 && (
-          <div className="col-span-4">
+          <div className="col-span-12 lg:col-span-4">
             <label className="dark:text-white" htmlFor="">
               {t("properties.crudProperty.area")}:
             </label>
@@ -287,7 +277,7 @@ const AddProperty = () => {
             </Select>
           </div>
         )}
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.price")}:
           </label>
@@ -306,7 +296,7 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.baths")}:
           </label>
@@ -334,7 +324,7 @@ const AddProperty = () => {
               </AlertValidation>
             )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.beds")}:
           </label>
@@ -362,7 +352,7 @@ const AddProperty = () => {
               </AlertValidation>
             )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.sqt")}:
           </label>
@@ -381,7 +371,7 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.type")}:
           </label>
@@ -411,7 +401,7 @@ const AddProperty = () => {
           </Select>
         </div>
         {/* tags */}
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.tag")}:
           </label>
@@ -441,7 +431,7 @@ const AddProperty = () => {
           </Select>
         </div>
 
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.distance.shop")}:
           </label>
@@ -460,7 +450,7 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.distance.airport")}:
           </label>
@@ -479,7 +469,7 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.distance.hospital")}:
           </label>
@@ -498,7 +488,7 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.attachment.download")}:
           </label>
@@ -512,7 +502,7 @@ const AddProperty = () => {
             type="text"
           />
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.buyVideo")}:
           </label>
@@ -526,7 +516,7 @@ const AddProperty = () => {
             type="text"
           />
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.availability")}:
           </label>
@@ -539,6 +529,25 @@ const AddProperty = () => {
             placeholder={t("properties.crudProperty.placeholder")}
             type="text"
           />
+        </div>
+        <div className="col-span-12 lg:col-span-4">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.map")}:
+          </label>
+          <br />
+          <input
+            {...register("mapLink", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.mapLink && errors.mapLink.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.mapLinkReqError")}
+            </AlertValidation>
+          )}
         </div>
         <div className="col-span-12">
           <label className="dark:text-white" htmlFor="">
@@ -587,33 +596,3 @@ const AddProperty = () => {
   );
 };
 export default AddProperty;
-// export const insertProperty = async ({ request }: RegisterAction) => {
-//   const locale = localStorage.getItem("language");
-//   const formData = await request.FormData();
-//   const data = Object.fromEntries(formData);
-//   console.log(data);
-//   const response = await httpService.post(`/dashboard/create/${locale}`, {
-//     title: data.title,
-//     price: data.price,
-//     location: data.locationValue,
-//     area: data.areaValue,
-//     baths: data.area,
-//     beds: data.beds,
-//     sqt: data.sqt,
-//     distToShop: data.distShop,
-//     distToAirport: data.distAirport,
-//     distToHospital: data.distHospital,
-//     type: data.typeValue,
-//     details: data.description,
-//     buyMedia: data.buyPropertyLink,
-//     availableMedia: data.availablePropertyLink,
-//     download: data.brochureLink,
-//     imagesArr: data.images,
-//     tag: data.tagValue,
-//     featuresArr: data.features,
-//   });
-//   if (response.status === 200) {
-//     toast.success("Insert Is Successfully");
-//     return redirect("/");
-//   }
-// };

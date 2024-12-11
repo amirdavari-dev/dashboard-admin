@@ -50,7 +50,8 @@
       },
       "buyVideo" : "Buy this property(Link)",
       "availability" : "Availability of the property(Link)",
-      "detailsDesc" : "More Details"
+      "detailsDesc" : "More Details",
+      "map" : "Map Link"
     },
     "submitForms":{
       "addProperty" : {
@@ -65,7 +66,8 @@
         "sqtReqError" : "Please enter Sqt",
         "typeReqError"  : "Please Select type",
         "distanceReqError" : "Please Enter Distance Value with km",
-        "descReqError" : "Please Write Description For Property"
+        "descReqError" : "Please Write Description For Property",
+        "mapLinkReqError" : "Please enter the Google Map ID of the house"
       }
     },
     "mainData": {

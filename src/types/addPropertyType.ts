@@ -11,6 +11,7 @@ export type FormData = {
   buyPropertyLink: string;
   availablePropertyLink: string;
   description: string;
+  mapLink : string
 };
 export type AddPropertyDataType = {
   locs: {

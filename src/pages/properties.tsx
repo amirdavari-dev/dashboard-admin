@@ -36,7 +36,7 @@ const Properties = () => {
           <Await resolve={loaderData}>
             <div></div>
             {loaderData ? (
-              <div className={`${showSidebar ? "justify-start" : "justify-start"} flex  items-center flex-wrap gap-2`}>
+              <div className={`${showSidebar ? "lg:justify-start justify-center" : "lg:justify-start justify-center"} flex items-center flex-wrap gap-2`}>
                 {loaderData.map(  
                   ({
                     area,

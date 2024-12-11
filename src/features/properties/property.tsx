@@ -29,7 +29,7 @@ const Property = ({
     <div
       className="rounded-[10px] w-[360px] border border-sky-200 overflow-hidden group bg-white h-[405px] min-h-[405px] max-h-[405px]"
     >
-      <div className="h-[200px] min-h-[200px] max-h-[200px] s1550:h-[277px] s1550:min-h-[277px] s1550:max-h-[277px] relative">
+      <div className="h-[200px] min-h-[200px] max-h-[200px]relative">
         <div className="absolute top-0 left-0 flex justify-between items-center z-10 w-full p-3 text-[11px] s1900:text-[12px]">
           <div>
             <p className="h-[25px] w-[72px] s1900:w-[89px] flex justify-center items-center rounded-[10px] p-2 bg-[#2E5A9080]/50 backdrop-blur-[10px] text-white font-normal">
