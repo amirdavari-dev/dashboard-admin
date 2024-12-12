@@ -2,49 +2,39 @@ import { httpService } from "@/core/http-service";
 import { RegisterAction } from "@/types/identity";
 import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-const locale = localStorage.getItem("language");
-const locations = await httpService.get(`/real-estates/locations/${locale}`);
-const types = await httpService.get(`/dashboard/properties/types/${locale}`);
-const tags = await httpService.get(`/dashboard/properties/tags/${locale}`);
-const landscapes = await httpService.get(`/dashboard/properties/landscapes/${locale}`);
-const heating = await httpService.get(`/dashboard/properties/heating-types/${locale}`);
-const features = await httpService.get(
-  `/dashboard/properties/features/${locale}`
-);
-export const getUpdateData = async () => {
-  if (
-    locations.status === 200 &&
-    types.status === 200 &&
-    tags.status === 200 &&
-    features.status === 200
-  ) {
-    return {
-      locs: locations.data,
-      types: types.data,
-      tags: tags.data,
-      features: features.data,
-    };
-  }
-};
+
 export const getAddData = async () => {
+  const locale = localStorage.getItem("language");
+  const features = await httpService.get(
+    `/dashboard/properties/features/${locale}`
+  );
+  const locations = await httpService.get(`/real-estates/locations/${locale}`);
+  const types = await httpService.get(`/dashboard/properties/types/${locale}`);
+  const tags = await httpService.get(`/dashboard/properties/tags/${locale}`);
+  const landscapes = await httpService.get(
+    `/dashboard/properties/landscapes/${locale}`
+  );
+  const heating = await httpService.get(
+    `/dashboard/properties/heating-types/${locale}`
+  );
   if (
     locations.status === 200 &&
     types.status === 200 &&
     tags.status === 200 &&
-    features.status === 200&&
-    landscapes.status === 200&&
+    features.status === 200 &&
+    landscapes.status === 200 &&
     heating.status === 200
   ) {
     console.log(landscapes);
     console.log(heating);
-    
+
     return {
       locs: locations.data,
       types: types.data,
       tags: tags.data,
       features: features.data,
-      landscapesData : landscapes.data,
-      heating : heating.data
+      landscapesData: landscapes.data,
+      heating: heating.data,
     };
   }
 };

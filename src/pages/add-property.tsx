@@ -147,7 +147,7 @@ const AddProperty = () => {
   // Submiting
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // setLoading(true);
+    setLoading(true);
     const typeMoneyValue = () => {
       let moneyValue: string = "dollar";
       if (typeMoney === 0) {
@@ -172,7 +172,6 @@ const AddProperty = () => {
       typeMoney: typeMoneyValue(),
       furnished,
     };
-    console.log(currentData);
 
     const response = httpService.post(`/dashboard/create/${locale}`, {
       title: currentData.title,
