@@ -104,6 +104,8 @@ const AddProperty = () => {
       features: selectedFeatures,
       tagValue,
     };
+    console.log(currentData);
+    
     const response = httpService.post(`/dashboard/create/${locale}`, {
       title: currentData.title,
       price: currentData.price,

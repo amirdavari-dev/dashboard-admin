@@ -6,7 +6,7 @@ type FeatureProps = {
 };
 const FeaturesPropertyCard = ({ feature , toggleFeature }: FeatureProps) => {
   return (
-    <div className="flex justify-between items-center w-[120px] rounded-[10px] p-2 bg-blue-600 text-white gap-x-2">
+    <div className="flex justify-between items-center w-fit text-lg rounded-[10px] p-2 bg-blue-600 text-white gap-x-2">
       <input
       onChange={(e)=>toggleFeature(feature.id , e.target.checked)}
       type="checkbox" id={feature.name + 12} />
