@@ -1,74 +1,213 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer components {
+    /* hidden scrollbar  */
+
+  .hidden-scrollbar::-webkit-scrollbar {
+    @apply hidden;
+  }
+  .scrollbar-custom::-webkit-scrollbar {
+    @apply w-[6px] pt-2;
+  }
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    @apply bg-[#2E5A9080] rounded-[100px];
+  }
+  .scrollbar-custom::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  /* upload image in news page */
+  .container {
+    --transition: 350ms;
+    --folder-W: 120px;
+    --folder-H: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+    background: linear-gradient(135deg, #6dd5ed, #2193b0);
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    height: calc(var(--folder-H) * 1.7);
+    position: relative;
+  }
+
+  .folder {
+    position: absolute;
+    top: -20px;
+    left: calc(50% - 60px);
+    animation: float 2.5s infinite ease-in-out;
+    transition: transform var(--transition) ease;
+  }
+
+  .folder:hover {
+    transform: scale(1.05);
+  }
+
+  .folder .front-side,
+  .folder .back-side {
+    position: absolute;
+    transition: transform var(--transition);
+    transform-origin: bottom center;
+  }
+
+  .folder .back-side::before,
+  .folder .back-side::after {
+    content: "";
+    display: block;
+    background-color: white;
+    opacity: 0.5;
+    z-index: 0;
+    width: var(--folder-W);
+    height: var(--folder-H);
+    position: absolute;
+    transform-origin: bottom center;
+    border-radius: 15px;
+    transition: transform 350ms;
+    z-index: 0;
+  }
+
+  .container:hover .back-side::before {
+    transform: rotateX(-5deg) skewX(5deg);
+  }
+  .container:hover .back-side::after {
+    transform: rotateX(-15deg) skewX(12deg);
+  }
+
+  .folder .front-side {
+    z-index: 1;
+  }
+
+  .container:hover .front-side {
+    transform: rotateX(-40deg) skewX(15deg);
+  }
+
+  .folder .tip {
+    background: linear-gradient(135deg, #ff9a56, #ff6f56);
+    width: 80px;
+    height: 20px;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: -10px;
+    z-index: 2;
+  }
+
+  .folder .cover {
+    background: linear-gradient(135deg, #ffe563, #ffc663);
+    width: var(--folder-W);
+    height: var(--folder-H);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  .custom-file-upload {
+    font-size: 1.1em;
+    color: #ffffff;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background var(--transition) ease;
+    display: inline-block;
+    width: 100%;
+    padding: 10px 35px;
+    position: relative;
+  }
+
+  .custom-file-upload:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .custom-file-upload input[type="file"] {
+    display: none;
+  }
+  /* form style */
+  .formItem{
+    @apply h-[120px]
+  }
+  .formItem input{
+    @apply h-[60px] 
+  }
+}
 @layer base {
-    @font-face {
-        font-family: iranyekan;
-        font-style: normal;
-        font-weight: 700;
-        src: url("../public/fonts/iranyekan/woff2/IRANYekanWebBold.woff2") format("woff2");
-        /* FF39+,Chrome36+, Opera24+*/
-      }
-      @font-face {
-        font-family: iranyekan;
-        font-style: normal;
-        font-weight: 300;
-        src: url("../public/fonts/iranyekan/woff2/IRANYekanWebRegular.woff2") format("woff2");
-        /* FF39+,Chrome36+, Opera24+*/
-      }
-      @font-face {
-        font-family: iranyekan;
-        font-style: normal;
-        font-weight: 400;
-        src: url("../public/fonts/iranyekan/woff2/IRANYekanWebMedium.woff2") format("woff2");
-        /* FF39+,Chrome36+, Opera24+*/
-      }
-      @font-face {
-        font-family: iranyekan;
-        font-style: normal;
-        font-weight: 500;
-        src: url("../public/fonts/iranyekan/woff2/IRANYekanWebMedium.woff2") format("woff2");
-        /* FF39+,Chrome36+, Opera24+*/
-      }
-      @font-face {
-        font-family: iranyekan;
-        font-style: normal;
-        font-weight: 800;
-        src: url("../public/fonts/iranyekan/woff2/IRANYekanWebExtraBold.woff2") format("woff2");
-        /* FF39+,Chrome36+, Opera24+*/
-      }
-      @font-face {
-        font-family: iranyekan;
-        font-style: normal;
-        font-weight: 900;
-        src: url("../public/fonts/iranyekan/woff2/IRANYekanWebBlack.woff2") format("woff2");
-        /* FF39+,Chrome36+, Opera24+*/
-      }
-      @font-face {
-        font-family: iranyekan;
-        font-style: normal;
-        font-weight: 1000;
-        src: url("../public/fonts/iranyekan/woff2/iranyekanwebextrablack.woff2") format("woff2");
-        /* FF39+,Chrome36+, Opera24+*/
-      }
+  @font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 700;
+    src: url("../public/fonts/iranyekan/woff2/IRANYekanWebBold.woff2")
+      format("woff2");
+    /* FF39+,Chrome36+, Opera24+*/
+  }
+  @font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 300;
+    src: url("../public/fonts/iranyekan/woff2/IRANYekanWebRegular.woff2")
+      format("woff2");
+    /* FF39+,Chrome36+, Opera24+*/
+  }
+  @font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 400;
+    src: url("../public/fonts/iranyekan/woff2/IRANYekanWebMedium.woff2")
+      format("woff2");
+    /* FF39+,Chrome36+, Opera24+*/
+  }
+  @font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 500;
+    src: url("../public/fonts/iranyekan/woff2/IRANYekanWebMedium.woff2")
+      format("woff2");
+    /* FF39+,Chrome36+, Opera24+*/
+  }
+  @font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 800;
+    src: url("../public/fonts/iranyekan/woff2/IRANYekanWebExtraBold.woff2")
+      format("woff2");
+    /* FF39+,Chrome36+, Opera24+*/
+  }
+  @font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 900;
+    src: url("../public/fonts/iranyekan/woff2/IRANYekanWebBlack.woff2")
+      format("woff2");
+    /* FF39+,Chrome36+, Opera24+*/
+  }
+  @font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 1000;
+    src: url("../public/fonts/iranyekan/woff2/iranyekanwebextrablack.woff2")
+      format("woff2");
+    /* FF39+,Chrome36+, Opera24+*/
+  }
 }
 
-@layer utilities{
+@layer utilities {
   /* identity form */
-  .container-identity{
-    @apply p-2 rounded-lg max-w-96 mx-auto mt-10 
+  .container-identity {
+    @apply p-2 rounded-lg max-w-96 mx-auto mt-10;
   }
-  .identity-box{
+  .identity-box {
     @apply flex flex-col items-start my-2;
   }
-  .form-identity-input{
-    @apply bg-slate-200 w-full rounded-md border p-1 outline-none
+  .form-identity-input {
+    @apply bg-slate-200 w-full rounded-md border p-1 outline-none;
   }
-  .invalid-identity{
-    @apply border border-rose-400
+  .invalid-identity {
+    @apply border border-rose-400;
   }
   /* dropdown change language style */
-  .flex-dropdown{
-    @apply flex justify-start items-center gap-x-2 my-1
+  .flex-dropdown {
+    @apply flex justify-start items-center gap-x-2 my-1;
   }
 }

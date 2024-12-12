@@ -5,9 +5,10 @@ import MainLayout from "./layouts/mainLayout/mainLayout";
 import NotFound from "./pages/notFound";
 import UnhandledException from "./pages/unhandle-exeption";
 import AddProperty from "./pages/add-property";
-import { getAddData } from "./controller/addPropertyloader";
+import { getAddData, getUpdateData } from "./controller/addPropertyloader";
 import Properties from "./pages/properties";
 import { getRealEstates } from "./controller/getRealEstates";
+import UpdateProperty from "./pages/update-property";
 
 const Router = createBrowserRouter([
   {
@@ -27,6 +28,12 @@ const Router = createBrowserRouter([
         // action : insertProperty,
         errorElement: <AddProperty />,
       },
+      {
+        path : "update-property",
+        element : <UpdateProperty />,
+        loader : getUpdateData,
+        errorElement: <UpdateProperty />,
+      }
     ],
   },
   // {

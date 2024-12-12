@@ -1,6 +1,8 @@
 import prop from "@/assets/images/prop.png";
 import AlertValidation from "@/components/alertValidation";
 import FeaturesPropertyCard from "@/components/features-property-card";
+import HeatCard from "@/components/heatCard";
+import LandscapeCard from "@/components/landscapeCard";
 import {
   Select,
   SelectContent,
@@ -15,12 +17,14 @@ import { AddPropertyDataType, FormData } from "@/types/addPropertyType";
 import { ChangeEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { FaPlus } from "react-icons/fa6";
+import { FaDollarSign } from "react-icons/fa6";
+import { IoLogoEuro } from "react-icons/io5";
+import { MdOutlineCurrencyRuble } from "react-icons/md";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddProperty = () => {
-  const { locs, types, tags, features } =
+  const { locs, types, tags, features, heating, landscapesData } =
     useLoaderData() as AddPropertyDataType;
   const { t } = useTranslation();
   const {
@@ -30,6 +34,9 @@ const AddProperty = () => {
   } = useForm<FormData>();
   const locale = localStorage.getItem("language");
   const [selectedFeatures, setSelectedFeatures] = useState<number[]>([]);
+  const [landscapes, setLanscapes] = useState<number[]>([]);
+  const [heats, setHeats] = useState<number[]>([]);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [areaList, setAreaList] = useState<
     {
       id: number;
@@ -40,11 +47,17 @@ const AddProperty = () => {
   const [locationValue, setLocationValue] = useState<string | 0>(0);
   const [areaValue, setAreaValue] = useState<string | 0>(0);
   const [typeValue, setTypeValue] = useState<string | 0>(0);
-  const [tagValue, setTagValue] = useState<string | 0>(0);
+  const [furnished, setFurnished] = useState<boolean | null>(null);
+  const [imgCounter, setImageCounter] = useState<number>(0);
+  // const [tagValue, setTagValue] = useState<string | 0>(0);
   const [images, setImages] = useState<
-    { id: string; image: string; name: string }[]
+    { id: string; image: string; name: string; order: number }[]
   >([]);
   const [loading, setLoading] = useState(false);
+  const [typeMoney, setTypeMoney] = useState<0 | 1 | 2>(0);
+  const [money, setIsMoney] = useState<boolean>(false);
+  const [minMoney, setMinMoney] = useState<string>("");
+  const [maxMoney, setMaxMoney] = useState<string>("");
   const getAreaList = async (locationId: number | undefined) => {
     if (!locationId) {
       return;
@@ -63,6 +76,8 @@ const AddProperty = () => {
       }
     }
   };
+  // Operation On the Data List
+  // get files
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
@@ -73,7 +88,12 @@ const AddProperty = () => {
         if (reader.result) {
           setImages([
             ...images,
-            { id: keyImg, image: reader.result.toString(), name: file.name },
+            {
+              id: keyImg,
+              image: reader.result.toString(),
+              name: file.name,
+              order: images.length + 1,
+            },
           ]);
         }
       };
@@ -82,6 +102,9 @@ const AddProperty = () => {
   };
   const handleDelete = (id: string) => {
     setImages((imgs) => imgs.filter((img) => img.id !== id));
+  };
+  const handleShow = (img: number) => {
+    setImageCounter(img);
   };
   const toggleFeature = (id: number, isChecked: boolean) => {
     if (isChecked) {
@@ -92,9 +115,50 @@ const AddProperty = () => {
       );
     }
   };
+  const toggleTag = (id: number, isChecked: boolean) => {
+    if (isChecked) {
+      setSelectedTags((prev) => [...prev, id]);
+    } else {
+      setSelectedTags((prev) => prev.filter((tag) => tag !== id));
+    }
+  };
+  const toggleHeat = (id: number, isChecked: boolean) => {
+    if (isChecked) {
+      setHeats((prev) => [...prev, id]);
+    } else {
+      setHeats((prev) => prev.filter((heat) => heat !== id));
+    }
+  };
+  const toggleLandscape = (id: number, isChecked: boolean) => {
+    if (isChecked) {
+      setLanscapes((prev) => [...prev, id]);
+    } else {
+      setLanscapes((prev) => prev.filter((heat) => heat !== id));
+    }
+  };
+  const handlePrice = (price: string, typeMoney: "min" | "max") => {
+    const regex = /^\d*\.?\d*$/;
+    if (regex.test(price)) {
+      const text = Number(price).toLocaleString("en-US");
+      typeMoney === "max" ? setMaxMoney(text) : setMinMoney(text);
+    }
+  };
+
+  // Submiting
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    setLoading(true);
+    // setLoading(true);
+    const typeMoneyValue = () => {
+      let moneyValue: string = "dollar";
+      if (typeMoney === 0) {
+        moneyValue = "dollar";
+      } else if (typeMoney === 1) {
+        moneyValue = "ruble";
+      } else {
+        moneyValue = "euro";
+      }
+      return moneyValue;
+    };
     const currentData = {
       ...data,
       images: images.map(({ id, ...img }) => img),
@@ -102,13 +166,19 @@ const AddProperty = () => {
       areaValue,
       typeValue,
       features: selectedFeatures,
-      tagValue,
+      tagsArr: selectedTags,
+      landscapes,
+      heats,
+      typeMoney: typeMoneyValue(),
+      furnished,
     };
     console.log(currentData);
-    
+
     const response = httpService.post(`/dashboard/create/${locale}`, {
       title: currentData.title,
-      price: currentData.price,
+      price: currentData.minPrice,
+      priceMax : money ? currentData.maxPrice : 0,
+      priceMin :currentData.minPrice,
       location: currentData.locationValue,
       area: currentData.areaValue,
       baths: currentData.baths,
@@ -123,9 +193,17 @@ const AddProperty = () => {
       availableMedia: currentData.availablePropertyLink,
       download: currentData.brochureLink,
       imagesArr: currentData.images,
-      tag: currentData.tagValue,
+      tagsArr: currentData.tagsArr,
       featuresArr: currentData.features,
-      locationMap : currentData.mapLink
+      locationMap: currentData.mapLink,
+      moneyType: currentData.typeMoney,
+      buildingInformation: currentData.buildingInformation,
+      buildingFloor: currentData.floor,
+      ageOfTheBuilding: currentData.ageOfBuilding,
+      furnishedSale: currentData.furnished ? 1 : 0,
+      distToSea: currentData.distSea,
+      landscapesArr: currentData.landscapes,
+      heatingTypesArr: currentData.heats,
     });
     toast.promise(
       response,
@@ -152,51 +230,62 @@ const AddProperty = () => {
         position: "top-center",
       }
     );
-  }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-center items-center">
-        <div className="my-10 w-[500px]">
-          <div className="flex justify-center items-center">
-            <div className="w-[360px] h-[200px] rounded-lg overflow-hidden">
-              <img
-                className="w-full h-full"
-                src={images.length >= 1 ? images[0].image : prop}
-                alt=""
-              />
+        <div className="my-10 grid grid-cols-12 gap-y-10 w-full">
+          <div className="col-span-12 md:col-span-6">
+            <div className="flex justify-center items-center">
+              <div className="w-[360px] h-[200px] rounded-lg overflow-hidden">
+                <img
+                  className="w-full h-full"
+                  src={images.length >= 1 ? images[imgCounter].image : prop}
+                  alt=""
+                />
+              </div>
+            </div>
+            <div className="flex mt-4 justify-start items-center gap-x-3 flex-nowrap whitespace-nowrap overflow-x-scroll scrollbar-custom">
+              {images.map((imageImg, index) => {
+                return (
+                  <ImageCard
+                    imgId={imageImg.id}
+                    handleDelete={handleDelete}
+                    handleShow={handleShow}
+                    counterImg={index}
+                    key={imageImg.id}
+                    src={imageImg.image}
+                  />
+                );
+              })}
             </div>
           </div>
-          <div className="flex mt-4 justify-start items-center gap-x-3 flex-nowrap whitespace-nowrap overflow-x-scroll">
-            <div className="bg-blue-600 flex justify-center items-center w-[80px] min-w-[80px] max-w-[80px] h-[80px] rounded-md overflow-hidden">
-              <input
-                type="file"
-                id="image-upload"
-                className="hidden"
-                accept="image/jpeg"
-                onChange={handleFileChange}
-              />
-              <label
-                htmlFor="image-upload"
-                className="w-full h-full flex justify-center items-center dark:text-white"
-              >
-                <FaPlus className="text-white" size={18} />
+          <div className="col-span-12 md:col-span-6 flex justify-center items-center">
+            <div className="container w-full sm:w-[400px]">
+              <div className="folder">
+                <div className="front-side">
+                  <div className="tip"></div>
+                  <div className="cover"></div>
+                </div>
+                <div className="back-side cover"></div>
+              </div>
+              <label className="custom-file-upload font-bold text-sm sm:text-balance">
+                <input
+                  className="title"
+                  accept="image/jpeg/jpg"
+                  type="file"
+                  onChange={handleFileChange}
+                />
+                {t("properties.crudProperty.upload")}
               </label>
             </div>
-            {images.map((imageImg) => {
-              return (
-                <ImageCard
-                  imgId={imageImg.id}
-                  handleDelete={handleDelete}
-                  key={imageImg.id}
-                  src={imageImg.image}
-                />
-              );
-            })}
           </div>
         </div>
       </div>
       <div className="grid grid-cols-12 gap-5 mb-5 px-4">
-        <div className="col-span-12 lg:col-span-4">
+        {/* title */}
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.title")}:
           </label>
@@ -215,90 +304,101 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.location")}:
-          </label>
-          <br />
-          <Select
-            onValueChange={(value) => {
-              setLocationValue(value);
-              const locKey = locs.find((loc) => loc.location_key === value);
-              getAreaList(locKey?.id);
-            }}
-          >
-            <SelectTrigger className="w-full mt-3">
-              {locationValue === 0
-                ? `${t("properties.crudProperty.location")}`
-                : locationValue.toUpperCase()}
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectGroup>
-                <SelectLabel>Select Location</SelectLabel>
-                {locs.map((loc) => {
-                  return (
-                    <SelectItem key={loc.id} value={loc.location_key}>
-                      {loc.location_name.toUpperCase()}
-                    </SelectItem>
-                  );
+        {/* price */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <div className="grid grid-cols-12 gap-x-2">
+            <div className={money ? "col-span-6" : "col-span-12"}>
+              <label className="dark:text-white" htmlFor="">
+                {t("properties.crudProperty.minprice")}:
+              </label>
+              <br />
+              <input
+                {...register("minPrice", {
+                  required: true,
                 })}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        {locationValue !== 0 && (
-          <div className="col-span-12 lg:col-span-4">
-            <label className="dark:text-white" htmlFor="">
-              {t("properties.crudProperty.area")}:
-            </label>
-            <br />
-            <Select onValueChange={(value) => setAreaValue(value)}>
-              <SelectTrigger className="w-full mt-3">
-                {areaValue === 0
-                  ? `${t("properties.crudProperty.area")}`
-                  : areaValue.toUpperCase()}
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectGroup>
-                  <SelectLabel>Select Area</SelectLabel>
-                  {areaList.length === 0 ? (
-                    <SelectItem value="0">
-                      Not Found Area For This Location
-                    </SelectItem>
-                  ) : (
-                    areaList.map((area) => {
-                      return (
-                        <SelectItem key={area.id} value={area.area_key}>
-                          {area.area_name.toUpperCase()}
-                        </SelectItem>
-                      );
-                    })
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+                onChange={(e) => {
+                  handlePrice(e.target.value, "min");
+                  // setIsMoney(Boolean(e.target.value));
+                }}
+                className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+                placeholder={t("properties.crudProperty.placeholder")}
+                type="text"
+              />
+            </div>
+            <div className={money ? "col-span-6" : " hidden"}>
+              <label className="dark:text-white" htmlFor="">
+                {t("properties.crudProperty.maxprice")}:
+              </label>
+              <br />
+              <input
+                {...register("maxPrice", {
+                  required: true,
+                })}
+                onChange={(e) => {
+                  if (!e.target.value) {
+                    setIsMoney(false);
+                  }
+                  handlePrice(e.target.value, "max");
+                }}
+                className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+                placeholder={t("properties.crudProperty.placeholder")}
+                type="text"
+              />
+            </div>
+            <div className="col-span-12 flex justify-between items-center gap-x-2 dark:text-white pt-2">
+              <div className="flex justify-start items-center gap-x-2">
+                <button
+                  onClick={() => setTypeMoney(0)}
+                  type="button"
+                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
+                    typeMoney === 0 && "bg-blue-600 text-white"
+                  } `}
+                >
+                  <FaDollarSign size={18} />
+                </button>
+                <button
+                  onClick={() => setTypeMoney(1)}
+                  type="button"
+                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
+                    typeMoney === 1 && "bg-blue-600 text-white"
+                  } `}
+                >
+                  <MdOutlineCurrencyRuble size={18} />
+                </button>
+                <button
+                  onClick={() => setTypeMoney(2)}
+                  type="button"
+                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
+                    typeMoney === 2 && "bg-blue-600 text-white"
+                  } `}
+                >
+                  <IoLogoEuro size={18} />
+                </button>
+              </div>
+              <div>
+                {!money && (
+                  <div className="flex justify-end items-center gap-x-2 h-[30px]">
+                    <label htmlFor="labelCheckPrice">
+                      {t("properties.crudProperty.activation")}
+                    </label>
+                    <input
+                      id="labelCheckPrice"
+                      type="checkbox"
+                      onChange={(e) => {
+                        setIsMoney(e.target.checked ? true : false);
+                      }}
+                    />
+                  </div>
+                )}
+                {money && (
+                  <p>{money ? `${minMoney} - ${maxMoney}` : minMoney}</p>
+                )}
+              </div>
+            </div>
           </div>
-        )}
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.price")}:
-          </label>
-          <br />
-          <input
-            {...register("price", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-          {errors.price && errors.price.type === "required" && (
-            <AlertValidation>
-              {t("properties.submitForms.addProperty.priceReqError")}
-            </AlertValidation>
-          )}
         </div>
-        <div className="col-span-12 lg:col-span-4">
+        {/* baths */}
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.baths")}:
           </label>
@@ -326,7 +426,8 @@ const AddProperty = () => {
               </AlertValidation>
             )}
         </div>
-        <div className="col-span-12 lg:col-span-4">
+        {/* beds */}
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.beds")}:
           </label>
@@ -354,7 +455,8 @@ const AddProperty = () => {
               </AlertValidation>
             )}
         </div>
-        <div className="col-span-12 lg:col-span-4">
+        {/* sqt */}
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.sqt")}:
           </label>
@@ -373,7 +475,260 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        <div className="col-span-12 lg:col-span-4">
+
+        {/* shopping */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.distance.shop")}:
+          </label>
+          <br />
+          <input
+            {...register("distShop", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.distShop && errors.distShop.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.distanceReqError")}
+            </AlertValidation>
+          )}
+        </div>
+        {/* airport */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.distance.airport")}:
+          </label>
+          <br />
+          <input
+            {...register("distAirport", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.distAirport && errors.distAirport.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.distanceReqError")}
+            </AlertValidation>
+          )}
+        </div>
+        {/* hospital */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.distance.hospital")}:
+          </label>
+          <br />
+          <input
+            {...register("distHospital", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.distHospital && errors.distHospital.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.distanceReqError")}
+            </AlertValidation>
+          )}
+        </div>
+        {/* sea */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.distance.sea")}:
+          </label>
+          <br />
+          <input
+            {...register("distSea", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.distSea && errors.distSea.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.distSeaReqError")}
+            </AlertValidation>
+          )}
+        </div>
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.attachment.download")}:
+          </label>
+          <br />
+          <input
+            {...register("brochureLink", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+        </div>
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.buyVideo")}:
+          </label>
+          <br />
+          <input
+            {...register("buyPropertyLink", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+        </div>
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.availability")}:
+          </label>
+          <br />
+          <input
+            {...register("availablePropertyLink", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+        </div>
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.map")}:
+          </label>
+          <br />
+          <input
+            {...register("mapLink", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.mapLink && errors.mapLink.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.mapLinkReqError")}
+            </AlertValidation>
+          )}
+        </div>
+        {/* floor */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.floor")}:
+          </label>
+          <br />
+          <input
+            {...register("floor", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.mapLink && errors.mapLink.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.floorReqError")}
+            </AlertValidation>
+          )}
+        </div>
+        {/* Age Of Building */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.ageOfBuilding")}:
+          </label>
+          <br />
+          <input
+            {...register("ageOfBuilding", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            type="text"
+          />
+          {errors.ageOfBuilding && errors.ageOfBuilding.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.ageOfBuildingReqError")}
+            </AlertValidation>
+          )}
+        </div>
+        {/* location */}
+        <div className="col-span-12 lg:col-span-3 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.location")}:
+          </label>
+          <br />
+          <Select
+            onValueChange={(value) => {
+              setLocationValue(value);
+              const locKey = locs.find((loc) => loc.location_key === value);
+              getAreaList(locKey?.id);
+            }}
+          >
+            <SelectTrigger className="w-full mt-3">
+              {locationValue === 0
+                ? `${t("properties.crudProperty.location")}`
+                : locationValue.toUpperCase()}
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectGroup>
+                <SelectLabel>
+                  {t("properties.submitForms.select.location")}
+                </SelectLabel>
+                {locs.map((loc) => {
+                  return (
+                    <SelectItem key={loc.id} value={loc.location_key}>
+                      {loc.location_name.toUpperCase()}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        {/* area */}
+        {locationValue !== 0 && (
+          <div className="col-span-12 lg:col-span-3 formItem">
+            <label className="dark:text-white" htmlFor="">
+              {t("properties.crudProperty.area")}:
+            </label>
+            <br />
+            <Select onValueChange={(value) => setAreaValue(value)}>
+              <SelectTrigger className="w-full mt-3">
+                {areaValue === 0
+                  ? `${t("properties.crudProperty.area")}`
+                  : areaValue.toUpperCase()}
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectGroup>
+                  <SelectLabel>
+                    {t("properties.submitForms.select.area")}
+                  </SelectLabel>
+                  {areaList.length === 0 ? (
+                    <SelectItem value="0">
+                      Not Found Area For This Location
+                    </SelectItem>
+                  ) : (
+                    areaList.map((area) => {
+                      return (
+                        <SelectItem key={area.id} value={area.area_key}>
+                          {area.area_name.toUpperCase()}
+                        </SelectItem>
+                      );
+                    })
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        {/* type */}
+        <div className="col-span-12 lg:col-span-3 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.type")}:
           </label>
@@ -402,191 +757,160 @@ const AddProperty = () => {
             </SelectContent>
           </Select>
         </div>
-        {/* tags */}
-        <div className="col-span-12 lg:col-span-4">
+        {/* furnished */}
+        <div className="col-span-12 lg:col-span-3 formItem">
           <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.tag")}:
+            {t("properties.crudProperty.furnished")}:
           </label>
           <br />
           <Select
             onValueChange={(value) => {
-              setTagValue(value);
+              setFurnished(value === "1" ? true : false);
             }}
           >
-            <SelectTrigger className="w-full mt-3">
-              {tagValue === 0
-                ? `${t("properties.crudProperty.tag")}`
-                : tagValue.toUpperCase()}
+            <SelectTrigger className="w-full mt-3 flex justify-between items-center">
+              {furnished
+                ? t("properties.crudProperty.furnishedOn")
+                : t("properties.crudProperty.furnishedOff")}
             </SelectTrigger>
             <SelectContent className="bg-white">
               <SelectGroup>
-                <SelectLabel>Select Tag</SelectLabel>
-                {tags.map((tag) => {
-                  return (
-                    <SelectItem key={tag.id} value={tag.tag_key}>
-                      {tag.name.toUpperCase()}
-                    </SelectItem>
-                  );
-                })}
+                <SelectLabel>
+                  {t("properties.submitForms.select.furnished")}
+                </SelectLabel>
+                <SelectItem value="1">
+                  {t("properties.crudProperty.furnishedOn")}
+                </SelectItem>
+                <SelectItem value="0">
+                  {t("properties.crudProperty.furnishedOff")}
+                </SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
-
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.distance.shop")}:
-          </label>
-          <br />
-          <input
-            {...register("distShop", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-          {errors.distShop && errors.distShop.type === "required" && (
-            <AlertValidation>
-              {t("properties.submitForms.distanceReqError")}
-            </AlertValidation>
-          )}
+        <div className="col-span-12 grid grid-cols-12 gap-x-5">
+          {/* more details */}
+          <div className="col-span-12 md:col-span-6">
+            <label className="dark:text-white" htmlFor="">
+              {t("properties.crudProperty.detailsDesc")}:
+            </label>
+            <br />
+            <textarea
+              {...register("description", {
+                required: true,
+              })}
+              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+              placeholder={t("properties.crudProperty.placeholder")}
+              rows={5}
+              cols={3}
+            ></textarea>
+            {errors.description && errors.description.type === "required" && (
+              <AlertValidation>
+                {t("properties.submitForms.addProperty.descReqError")}
+              </AlertValidation>
+            )}
+          </div>
+          {/* building information */}
+          <div className="col-span-12 md:col-span-6 ">
+            <label className="dark:text-white" htmlFor="">
+              {t("properties.crudProperty.buildingInformation")}:
+            </label>
+            <br />
+            <textarea
+              {...register("buildingInformation", {
+                required: true,
+              })}
+              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+              placeholder={t("properties.crudProperty.placeholder")}
+              rows={5}
+              cols={3}
+            ></textarea>
+            {errors.description && errors.description.type === "required" && (
+              <AlertValidation>
+                {t(
+                  "properties.submitForms.addProperty.buildingInformationReqError"
+                )}
+              </AlertValidation>
+            )}
+          </div>
         </div>
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.distance.airport")}:
-          </label>
-          <br />
-          <input
-            {...register("distAirport", {
-              required: true,
+        {/* tags */}
+        <div className="col-span-12 md:col-span-6 mb-5">
+          <div>
+            <h2 className="text-blue-600 dark:text-white text-lg mb-4">
+              {t("properties.crudProperty.tagLabel")}
+            </h2>
+          </div>
+          <div className="overflow-x-scroll scrollbar-custom flex flex-nowrap whitespace-nowrap justify-start items-center gap-x-3 p-3">
+            {tags.map((tags) => {
+              return (
+                <FeaturesPropertyCard
+                  key={tags.id}
+                  feature={tags}
+                  toggleFeature={toggleTag}
+                />
+              );
             })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-          {errors.distAirport && errors.distAirport.type === "required" && (
-            <AlertValidation>
-              {t("properties.submitForms.distanceReqError")}
-            </AlertValidation>
-          )}
+          </div>
         </div>
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.distance.hospital")}:
-          </label>
-          <br />
-          <input
-            {...register("distHospital", {
-              required: true,
+        {/* features */}
+        <div className=" col-span-12 md:col-span-6  mb-5">
+          <div>
+            <h2 className="text-blue-600 dark:text-white text-lg mb-4">
+              {t("properties.crudProperty.features")}
+            </h2>
+          </div>
+          <div className="overflow-x-scroll scrollbar-custom flex flex-nowrap whitespace-nowrap justify-start items-center gap-x-3 p-3">
+            {features.map((feature) => {
+              return (
+                <FeaturesPropertyCard
+                  key={feature.id}
+                  feature={feature}
+                  toggleFeature={toggleFeature}
+                />
+              );
             })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-          {errors.distHospital && errors.distHospital.type === "required" && (
-            <AlertValidation>
-              {t("properties.submitForms.distanceReqError")}
-            </AlertValidation>
-          )}
+          </div>
         </div>
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.attachment.download")}:
-          </label>
-          <br />
-          <input
-            {...register("brochureLink", {
-              required: true,
+        {/* heating */}
+        <div className=" col-span-12 md:col-span-6 mb-5">
+          <div>
+            <h2 className="text-blue-600 dark:text-white text-lg mb-4">
+              {t("properties.crudProperty.typeOfHeating")}
+            </h2>
+          </div>
+          <div className="overflow-x-scroll scrollbar-custom flex flex-nowrap whitespace-nowrap justify-start items-center gap-x-3 p-3">
+            {heating.map((heat) => {
+              return (
+                <HeatCard key={heat.id} heat={heat} toggleHeat={toggleHeat} />
+              );
             })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
+          </div>
         </div>
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.buyVideo")}:
-          </label>
-          <br />
-          <input
-            {...register("buyPropertyLink", {
-              required: true,
+        {/* landscapes */}
+        <div className=" col-span-12 md:col-span-6 mb-5">
+          <div>
+            <h2 className="text-blue-600 dark:text-white text-lg mb-4">
+              {t("properties.crudProperty.landscape")}
+            </h2>
+          </div>
+          <div className="overflow-x-scroll scrollbar-custom flex flex-nowrap whitespace-nowrap justify-start items-center gap-x-3 p-3">
+            {landscapesData.map((landscape) => {
+              return (
+                <LandscapeCard
+                  key={landscape.id}
+                  landscape={landscape}
+                  toggleLandscape={toggleLandscape}
+                />
+              );
             })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-        </div>
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.availability")}:
-          </label>
-          <br />
-          <input
-            {...register("availablePropertyLink", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-        </div>
-        <div className="col-span-12 lg:col-span-4">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.map")}:
-          </label>
-          <br />
-          <input
-            {...register("mapLink", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-          {errors.mapLink && errors.mapLink.type === "required" && (
-            <AlertValidation>
-              {t("properties.submitForms.addProperty.mapLinkReqError")}
-            </AlertValidation>
-          )}
-        </div>
-        <div className="col-span-12">
-          <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.detailsDesc")}:
-          </label>
-          <br />
-          <textarea
-            {...register("description", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            rows={5}
-            cols={3}
-          ></textarea>
-          {errors.description && errors.description.type === "required" && (
-            <AlertValidation>
-              {t("properties.submitForms.addProperty.descReqError")}
-            </AlertValidation>
-          )}
-        </div>
-        <div className="overflow-x-scroll col-span-12 flex flex-nowrap whitespace-nowrap justify-start items-center gap-x-3 p-3">
-          {features.map((feature) => {
-            return (
-              <FeaturesPropertyCard
-                key={feature.id}
-                feature={feature}
-                toggleFeature={toggleFeature}
-              />
-            );
-          })}
+          </div>
         </div>
       </div>
       <div className="flex justify-center items-center mb-10">
         <button
           disabled={loading}
-          className="bg-blue-600 text-white rounded-md overflow-hidden py-2 px-5 "
+          className="bg-blue-600 text-white rounded-md overflow-hidden py-2 px-5 hover:bg-blue-700 hover:scale-105 transition-all"
           type="submit"
         >
           {loading

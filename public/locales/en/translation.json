@@ -18,18 +18,23 @@
   },
   "mainLayout": {
     "sidebar": {
-      "header" : "Azpo Data Manage",
-      "allproperties": "All Property",
+      "header" : "Azpo Company",
+      "subText" : "Data management panel",
+      "allproperties": "Building management",
       "categoryProperty" : "Manage Properties"
     },
     "showToastLang" : "Please select your desired language before entering the add page"
   },
   "properties": {
     "crudProperty": {
+      "upload" : "Upload",
+      "floor": "Floor",
+      "ageOfBuilding" : "Age Of Building",
       "title": "Title",
       "location": "Location",
       "area": "Area",
-      "price": "Price",
+      "maxprice": "Max Price",
+      "minprice": "Min Price",
       "baths": "Baths",
       "beds": "Beds",
       "sqt": "Sqt",
@@ -39,11 +44,12 @@
       "submitSend" : "Send",
       "isError" : "There was a problem adding",
       "isInsert" : "The operation was successful Redirecting...",
-      "placeholder" : "Enter Value",
+      "placeholder" : "Enter the Value",
       "distance" : {
-        "shop" : "Distance to Shopping (Ex 5)km",
-        "hospital" : "Distance to Hospital (Ex 5)km",
-        "airport" : "Distance to Airport (Ex 5)km" 
+        "shop" : "Distance to Shopping(Ex 5)km",
+        "hospital" : "Distance to Hospital(Ex 5)km",
+        "sea" : "Distance to the sea(Ex 5)km",
+        "airport" : "Distance to the Airport (Ex 5)km" 
       },
       "attachment" : {
         "download" : "Download Free Brochure(Link)"
@@ -51,9 +57,23 @@
       "buyVideo" : "Buy this property(Link)",
       "availability" : "Availability of the property(Link)",
       "detailsDesc" : "More Details",
-      "map" : "Map Link"
+      "buildingInformation" : "Building Information",
+      "map" : "Map Link",
+      "furnishedOff" : "Off",
+      "furnishedOn" : "On",
+      "furnished" : "Furnished Sale",
+      "typeOfHeating" : "Types Of Heating",
+      "landscape" : "The Landscapes",
+      "tagLabel" : "The Tags",
+      "features" : "The Features",
+      "activation" : "Activation"
     },
     "submitForms":{
+      "select" : {
+        "furnished" : "Select Furnished",
+        "location" : "Select Location",
+        "area" : "Select Area"
+      },
       "addProperty" : {
         "titleReqError" : "Please Enter Title Value",
         "locationReqError" : "Please Select Location",
@@ -65,9 +85,13 @@
         "bedsLengthError" : "ُBeds Should be between 1 and 5",
         "sqtReqError" : "Please enter Sqt",
         "typeReqError"  : "Please Select type",
-        "distanceReqError" : "Please Enter Distance Value with km",
+        "distanceReqError" : "Please Enter Distance Value",
         "descReqError" : "Please Write Description For Property",
-        "mapLinkReqError" : "Please enter the Google Map ID of the house"
+        "buildingInformationReqError" : "Please Write Description",
+        "mapLinkReqError" : "Please enter the Google Map ID of the house",
+        "floorReqError" : "Please enter the number of floors of the house",
+        "ageOfBuildingReqError" : "Please enter the year the house was built",
+        "alertPrice" : ""
       }
     },
     "mainData": {

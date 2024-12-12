@@ -15,10 +15,10 @@ const Properties = () => {
   return (
     <div>
       <div className="p-2">
-        <div className="flex justify-between items-center mb-5">
+        <div className="flex justify-between items-center mb-5 mt-2">
           <button
             onClick={() => navigate("/add-property")}
-            className="bg-blue-600 text-white p-3 hover:bg-white border border-blue-600 hover:text-blue-600 text-sm rounded-md font-semibold hover:scale-105 transition-all"
+            className="bg-blue-600 text-white px-3 py-2 hover:bg-white border border-blue-600 hover:text-blue-600 text-sm rounded-md font-semibold hover:scale-105 transition-all"
           >
             {t("properties.mainData.addProperty")}
           </button>

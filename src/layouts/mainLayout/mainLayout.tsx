@@ -21,7 +21,7 @@ const MainLayout = () => {
         } col-span-12 relative overflow-y-scroll`}
       >
         <TopNav />
-        <main className="px-2 pb-8">
+        <main className="px-2 pb-8 bg-slate-100 dark:bg-slate-900">
           <Outlet />
         </main>
         <Footer />

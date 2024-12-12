@@ -1,6 +1,11 @@
 export type FormData = {
+  floor: string;
+  ageOfBuilding: string;
+  buildingInformation: string;
+  distSea: string;
   title: string;
-  price: number;
+  minPrice: number;
+  maxPrice: number;
   baths: number;
   beds: number;
   sqt: number;
@@ -11,8 +16,10 @@ export type FormData = {
   buyPropertyLink: string;
   availablePropertyLink: string;
   description: string;
-  mapLink : string
+  mapLink: string;
 };
+export type HeatType ={ id: number; name: string; heating_type_key: string }
+export type LandType ={ id: number; name: string; landscape_key: string }
 export type AddPropertyDataType = {
   locs: {
     id: number;
@@ -21,20 +28,22 @@ export type AddPropertyDataType = {
   }[];
   types: { id: number; name: string }[];
   tags: { id: number; name: string; tag_key: string }[];
-  features : {id : number , name : string}[]
+  features: { id: number; name: string }[];
+  landscapesData: LandType[];
+  heating: HeatType[];
 };
 
 export type ImgsPropType = {
-    id: number;
-    file_name: string;
-    property_id: number;
-}
+  id: number;
+  file_name: string;
+  property_id: number;
+};
 export type GetRealEstatesType = {
   area: string;
   bathroom: number;
   bed_room: number;
   id: number;
-  images : ImgsPropType[]
+  images: ImgsPropType[];
   location: string;
   metrage: number;
   price: number;
