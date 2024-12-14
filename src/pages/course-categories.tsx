@@ -39,7 +39,6 @@ const CourseCategories = () => {
         },
         error: {
           render({data} : any) {
-            console.log(data);
             return data.message;
           },
         },

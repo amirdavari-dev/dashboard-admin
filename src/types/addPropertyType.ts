@@ -1,7 +1,6 @@
 export type FormData = {
   floor: string;
   ageOfBuilding: string;
-  buildingInformation: string;
   distSea: string;
   title: string;
   minPrice: number;
@@ -50,4 +49,5 @@ export type GetRealEstatesType = {
   tag: string;
   title: string;
   type: string;
+  // typeMoney : "dollar" | "ruble" | "euro"
 }[];

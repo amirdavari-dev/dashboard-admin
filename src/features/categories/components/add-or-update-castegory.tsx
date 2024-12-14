@@ -36,10 +36,8 @@ const AddOrUpdateCategory = ({setShowAddCategory} : {setShowAddCategory : Functi
               },
               error: {
                 render({data} : any) {
-         
-                  
-                    console.log(data);
-                    
+                  console.log(data);
+                                      
                     return "امکان افزودن دسته بندی تکراری وجد ندارد"
           
                 },

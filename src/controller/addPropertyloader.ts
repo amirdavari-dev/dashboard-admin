@@ -25,9 +25,6 @@ export const getAddData = async () => {
     landscapes.status === 200 &&
     heating.status === 200
   ) {
-    console.log(landscapes);
-    console.log(heating);
-
     return {
       locs: locations.data,
       types: types.data,
@@ -42,7 +39,6 @@ export const insertProperty = async ({ request }: RegisterAction) => {
   const locale = localStorage.getItem("language");
   const formData = await request.FormData();
   const data = Object.fromEntries(formData);
-  console.log(data);
   const response = await httpService.post(`/dashboard/create/${locale}`, {
     title: data.title,
     price: data.price,

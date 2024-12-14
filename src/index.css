@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @layer components {
-    /* hidden scrollbar  */
+  /* hidden scrollbar  */
 
   .hidden-scrollbar::-webkit-scrollbar {
     @apply hidden;
@@ -126,11 +126,23 @@
     display: none;
   }
   /* form style */
-  .formItem{
-    @apply h-[120px]
+  .formItem {
+    @apply h-[120px];
   }
-  .formItem input{
-    @apply h-[60px] 
+  .formItem input {
+    @apply h-[60px];
+  }
+  input[type="number"] {
+    -moz-appearance: textfield; /* فایرفاکس */
+    -webkit-appearance: none; /* کروم */
+    appearance: none; /* بقیه */
+  }
+
+  /* اگر بخواهید پس‌زمینه ورودی را هم تغییر دهید */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 }
 @layer base {

@@ -10,8 +10,6 @@ const Properties = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const loaderData = useLoaderData() as GetRealEstatesType;
-  console.log(loaderData);
-
   return (
     <div>
       <div className="p-2">
@@ -62,6 +60,7 @@ const Properties = () => {
                         title={title}
                         type={type}
                         area={area}
+                        id={id}
                       />
                     );
                   }

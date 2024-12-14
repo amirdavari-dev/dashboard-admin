@@ -80,21 +80,22 @@ const AddProperty = () => {
   // get files
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    const newImages : { id: string; image: string; name: string; order: number }[] =[];
     if (!files) return;
     Array.from(files).forEach((file) => {
       const keyImg = `${file.lastModified}-${file.size}`;
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.result) {
-          setImages([
-            ...images,
-            {
-              id: keyImg,
-              image: reader.result.toString(),
-              name: file.name,
-              order: images.length + 1,
-            },
-          ]);
+          newImages.push({
+            id: keyImg,
+            image: reader.result.toString(),
+            name: file.name,
+            order: images.length + 1,
+          });
+          if (newImages.length === files.length) {
+            setImages((prevImages) => [...prevImages, ...newImages]);
+          }
         }
       };
       reader.readAsDataURL(file);
@@ -172,12 +173,11 @@ const AddProperty = () => {
       typeMoney: typeMoneyValue(),
       furnished,
     };
-
     const response = httpService.post(`/dashboard/create/${locale}`, {
       title: currentData.title,
       price: currentData.minPrice,
-      priceMax : money ? currentData.maxPrice : 0,
-      priceMin :currentData.minPrice,
+      priceMax: currentData.maxPrice ? currentData.maxPrice : null,
+      priceMin: currentData.minPrice,
       location: currentData.locationValue,
       area: currentData.areaValue,
       baths: currentData.baths,
@@ -196,7 +196,6 @@ const AddProperty = () => {
       featuresArr: currentData.features,
       locationMap: currentData.mapLink,
       moneyType: currentData.typeMoney,
-      buildingInformation: currentData.buildingInformation,
       buildingFloor: currentData.floor,
       ageOfTheBuilding: currentData.ageOfBuilding,
       furnishedSale: currentData.furnished ? 1 : 0,
@@ -219,8 +218,9 @@ const AddProperty = () => {
         },
         error: {
           render({ data }: any) {
-            console.log(data);
             setLoading(false);
+            console.log(data);
+            
             return t("properties.crudProperty.isError");
           },
         },
@@ -272,7 +272,8 @@ const AddProperty = () => {
               <label className="custom-file-upload font-bold text-sm sm:text-balance">
                 <input
                   className="title"
-                  accept="image/jpeg/jpg"
+                  multiple
+                  accept=".jpg , .jpeg"
                   type="file"
                   onChange={handleFileChange}
                 />
@@ -317,11 +318,10 @@ const AddProperty = () => {
                 })}
                 onChange={(e) => {
                   handlePrice(e.target.value, "min");
-                  // setIsMoney(Boolean(e.target.value));
                 }}
                 className="bg-white border w-full p-2 outline-none rounded-md mt-3"
                 placeholder={t("properties.crudProperty.placeholder")}
-                type="text"
+                type="number"
               />
             </div>
             <div className={money ? "col-span-6" : " hidden"}>
@@ -330,18 +330,13 @@ const AddProperty = () => {
               </label>
               <br />
               <input
-                {...register("maxPrice", {
-                  required: true,
-                })}
+                {...register("maxPrice")}
                 onChange={(e) => {
-                  if (!e.target.value) {
-                    setIsMoney(false);
-                  }
                   handlePrice(e.target.value, "max");
                 }}
                 className="bg-white border w-full p-2 outline-none rounded-md mt-3"
                 placeholder={t("properties.crudProperty.placeholder")}
-                type="text"
+                type="number"
               />
             </div>
             <div className="col-span-12 flex justify-between items-center gap-x-2 dark:text-white pt-2">
@@ -374,24 +369,20 @@ const AddProperty = () => {
                   <IoLogoEuro size={18} />
                 </button>
               </div>
-              <div>
-                {!money && (
-                  <div className="flex justify-end items-center gap-x-2 h-[30px]">
-                    <label htmlFor="labelCheckPrice">
-                      {t("properties.crudProperty.activation")}
-                    </label>
-                    <input
-                      id="labelCheckPrice"
-                      type="checkbox"
-                      onChange={(e) => {
-                        setIsMoney(e.target.checked ? true : false);
-                      }}
-                    />
-                  </div>
-                )}
-                {money && (
-                  <p>{money ? `${minMoney} - ${maxMoney}` : minMoney}</p>
-                )}
+              <div className="flex justify-end items-center gap-x-2">
+                <div className="flex justify-end items-center gap-x-2 h-[30px]">
+                  <label htmlFor="labelCheckPrice">
+                    {t("properties.crudProperty.activation")}
+                  </label>
+                  <input
+                    id="labelCheckPrice"
+                    type="checkbox"
+                    onChange={(e) => {
+                      setIsMoney(e.target.checked ? true : false);
+                    }}
+                  />
+                </div>
+                <p>{money ? `${minMoney} - ${maxMoney}` : minMoney}</p>
               </div>
             </div>
           </div>
@@ -410,7 +401,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.baths && errors.baths.type === "required" && (
             <AlertValidation>
@@ -439,7 +430,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.beds && errors.beds.type === "required" && (
             <AlertValidation>
@@ -466,7 +457,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.sqt && errors.sqt.type === "required" && (
             <AlertValidation>
@@ -487,7 +478,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.distShop && errors.distShop.type === "required" && (
             <AlertValidation>
@@ -507,7 +498,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.distAirport && errors.distAirport.type === "required" && (
             <AlertValidation>
@@ -527,7 +518,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.distHospital && errors.distHospital.type === "required" && (
             <AlertValidation>
@@ -547,7 +538,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.distSea && errors.distSea.type === "required" && (
             <AlertValidation>
@@ -628,7 +619,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.mapLink && errors.mapLink.type === "required" && (
             <AlertValidation>
@@ -648,7 +639,7 @@ const AddProperty = () => {
             })}
             className="bg-white border w-full p-2 outline-none rounded-md mt-3"
             placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
+            type="number"
           />
           {errors.ageOfBuilding && errors.ageOfBuilding.type === "required" && (
             <AlertValidation>
@@ -787,54 +778,29 @@ const AddProperty = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className="col-span-12 grid grid-cols-12 gap-x-5">
-          {/* more details */}
-          <div className="col-span-12 md:col-span-6">
-            <label className="dark:text-white" htmlFor="">
-              {t("properties.crudProperty.detailsDesc")}:
-            </label>
-            <br />
-            <textarea
-              {...register("description", {
-                required: true,
-              })}
-              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-              placeholder={t("properties.crudProperty.placeholder")}
-              rows={5}
-              cols={3}
-            ></textarea>
-            {errors.description && errors.description.type === "required" && (
-              <AlertValidation>
-                {t("properties.submitForms.addProperty.descReqError")}
-              </AlertValidation>
-            )}
-          </div>
-          {/* building information */}
-          <div className="col-span-12 md:col-span-6 ">
-            <label className="dark:text-white" htmlFor="">
-              {t("properties.crudProperty.buildingInformation")}:
-            </label>
-            <br />
-            <textarea
-              {...register("buildingInformation", {
-                required: true,
-              })}
-              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-              placeholder={t("properties.crudProperty.placeholder")}
-              rows={5}
-              cols={3}
-            ></textarea>
-            {errors.description && errors.description.type === "required" && (
-              <AlertValidation>
-                {t(
-                  "properties.submitForms.addProperty.buildingInformationReqError"
-                )}
-              </AlertValidation>
-            )}
-          </div>
+        {/* more details */}
+        <div className="col-span-12 md:col-span-12">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.detailsDesc")}:
+          </label>
+          <br />
+          <textarea
+            {...register("description", {
+              required: true,
+            })}
+            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+            placeholder={t("properties.crudProperty.placeholder")}
+            rows={5}
+            cols={3}
+          ></textarea>
+          {errors.description && errors.description.type === "required" && (
+            <AlertValidation>
+              {t("properties.submitForms.addProperty.descReqError")}
+            </AlertValidation>
+          )}
         </div>
         {/* tags */}
-        <div className="col-span-12 md:col-span-6 mb-5">
+        <div className="col-span-12 md:col-span-6 mb-5 border border-blue-600 rounded-md p-5">
           <div>
             <h2 className="text-blue-600 dark:text-white text-lg mb-4">
               {t("properties.crudProperty.tagLabel")}
@@ -853,7 +819,7 @@ const AddProperty = () => {
           </div>
         </div>
         {/* features */}
-        <div className=" col-span-12 md:col-span-6  mb-5">
+        <div className=" col-span-12 md:col-span-6  mb-5  border border-blue-600 rounded-md p-5">
           <div>
             <h2 className="text-blue-600 dark:text-white text-lg mb-4">
               {t("properties.crudProperty.features")}
@@ -872,7 +838,7 @@ const AddProperty = () => {
           </div>
         </div>
         {/* heating */}
-        <div className=" col-span-12 md:col-span-6 mb-5">
+        <div className=" col-span-12 md:col-span-6 mb-5  border border-blue-600 rounded-md p-5">
           <div>
             <h2 className="text-blue-600 dark:text-white text-lg mb-4">
               {t("properties.crudProperty.typeOfHeating")}
@@ -887,7 +853,7 @@ const AddProperty = () => {
           </div>
         </div>
         {/* landscapes */}
-        <div className=" col-span-12 md:col-span-6 mb-5">
+        <div className=" col-span-12 md:col-span-6 mb-5  border border-blue-600 rounded-md p-5">
           <div>
             <h2 className="text-blue-600 dark:text-white text-lg mb-4">
               {t("properties.crudProperty.landscape")}

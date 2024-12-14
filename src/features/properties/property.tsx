@@ -1,7 +1,8 @@
 import { LuBedDouble, LuCloudRain } from "react-icons/lu";
-import property from "@/assets/images/prop.png"
+import property from "@/assets/images/prop.png";
 import { BsArrowsMove } from "react-icons/bs";
 import { ImgsPropType } from "@/types/addPropertyType";
+// import { MdEuro, MdOutlineCurrencyRuble } from "react-icons/md";
 type PropertyType = {
   title: string;
   location: string;
@@ -12,7 +13,8 @@ type PropertyType = {
   metrage: number;
   images: ImgsPropType[];
   type: string;
-
+  id: number;
+  // typeMoney: "dollar" | "ruble" | "euro";
 };
 const Property = ({
   title,
@@ -24,12 +26,12 @@ const Property = ({
   price,
   area,
   type,
+  id,
+  // typeMoney,
 }: PropertyType) => {
   return (
-    <div
-      className="rounded-[10px] w-[360px] border border-sky-200 overflow-hidden group bg-white h-[405px] min-h-[405px] max-h-[405px]"
-    >
-      <div className="h-[200px] min-h-[200px] max-h-[200px]relative">
+    <div className="rounded-[10px] w-[360px] border border-sky-200 overflow-hidden group bg-white h-[405px] min-h-[405px] max-h-[405px]">
+      <div className="h-[200px] min-h-[200px] max-h-[200px] relative">
         <div className="absolute top-0 left-0 flex justify-between items-center z-10 w-full p-3 text-[11px] s1900:text-[12px]">
           <div>
             <p className="h-[25px] w-[72px] s1900:w-[89px] flex justify-center items-center rounded-[10px] p-2 bg-[#2E5A9080]/50 backdrop-blur-[10px] text-white font-normal">
@@ -42,8 +44,24 @@ const Property = ({
             </p>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 flex justify-between items-center z-10 w-full p-3 text-[11px] s1900:text-[12px]">
+          <div>
+            <p className="h-[25px] w-[72px] s1900:w-[89px] flex justify-center items-center rounded-[10px] p-2 bg-[#2E5A9080]/50 backdrop-blur-[10px] text-white font-normal text-[14px]">
+              <span>Id: {id}</span>
+            </p>
+          </div>
+        </div>
+
         <div className="w-full h-[200px]">
-            <img src={images.length >=1 ? `${import.meta.env.VITE_FILES_IMG+images[0].file_name}` : property} alt="" className="w-full h-full" />
+          <img
+            src={
+              images.length >= 1
+                ? `${import.meta.env.VITE_FILES_IMG + images[0].file_name}`
+                : property
+            }
+            alt=""
+            className="w-full h-full"
+          />
         </div>
       </div>
       <div className="mt-1 p-4">
@@ -58,7 +76,12 @@ const Property = ({
         <div>
           <p className="font-medium text-[12px] s1550:text-[20px]">
             <span className="text-[#939393] mr-2">From</span>
-            <span className="text-[#2E5A90]">{price}$</span>
+            <span className="text-[#2E5A90]">
+              {price}
+              {/* {
+                typeMoney === "dollar" ? "$" : typeMoney === "euro" ? <MdEuro size={16} /> : <MdOutlineCurrencyRuble size={14} />
+              } */}
+            </span>
           </p>
         </div>
         <div className="flex justify-start items-center gap-x-5 my-4 font-normal text-[12px] s1550:text-[16px]">
