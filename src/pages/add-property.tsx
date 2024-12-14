@@ -4,6 +4,11 @@ import FeaturesPropertyCard from "@/components/features-property-card";
 import HeatCard from "@/components/heatCard";
 import LandscapeCard from "@/components/landscapeCard";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -14,17 +19,20 @@ import {
 import { httpService } from "@/core/http-service";
 import ImageCard from "@/features/properties/imgCard";
 import { AddPropertyDataType, FormData } from "@/types/addPropertyType";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FaDollarSign } from "react-icons/fa6";
 import { IoLogoEuro } from "react-icons/io5";
-import { MdOutlineCurrencyRuble } from "react-icons/md";
+import {
+  MdOutlineCurrencyRuble,
+  MdOutlineKeyboardArrowDown,
+} from "react-icons/md";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddProperty = () => {
-  const { locs, types, tags, features, heating, landscapesData } =
+  const { locs, types, tags, features, heating, landscapesData, typeHouses } =
     useLoaderData() as AddPropertyDataType;
   const { t } = useTranslation();
   const {
@@ -58,29 +66,40 @@ const AddProperty = () => {
   const [money, setIsMoney] = useState<boolean>(false);
   const [minMoney, setMinMoney] = useState<string>("");
   const [maxMoney, setMaxMoney] = useState<string>("");
-  const getAreaList = async (locationId: number | undefined) => {
-    if (!locationId) {
-      return;
-    } else {
-      try {
-        const response = await httpService.get(
-          `/real-estates/areas/${locationId}/${locale}`
-        );
-        if (response.status === 200) {
-          setAreaList(response.data);
-        } else if (response.status === 404) {
+  const [typeUnit, setTypeUnit] = useState<number[]>([]);
+  const [locationId, setLocationId] = useState<number | undefined>(undefined);
+  const [bedsValue, setBedsValue] = useState("");
+  useEffect(() => {
+    const getAreaList = async (locationId: number | undefined) => {
+      if (!locationId) {
+        return;
+      } else {
+        try {
+          const response = await httpService.get(
+            `/real-estates/areas/${locationId}/${locale}`
+          );
+          if (response.status === 200) {
+            setAreaList(response.data);
+          } else if (response.status === 404) {
+            setAreaList([]);
+          }
+        } catch (err) {
           setAreaList([]);
         }
-      } catch (err) {
-        setAreaList([]);
       }
-    }
-  };
+    };
+    getAreaList(locationId);
+  }, [locationId, locale]);
   // Operation On the Data List
   // get files
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    const newImages : { id: string; image: string; name: string; order: number }[] =[];
+    const newImages: {
+      id: string;
+      image: string;
+      name: string;
+      order: number;
+    }[] = [];
     if (!files) return;
     Array.from(files).forEach((file) => {
       const keyImg = `${file.lastModified}-${file.size}`;
@@ -148,7 +167,7 @@ const AddProperty = () => {
   // Submiting
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // setLoading(true);
+    setLoading(true);
     const typeMoneyValue = () => {
       let moneyValue: string = "dollar";
       if (typeMoney === 0) {
@@ -172,9 +191,9 @@ const AddProperty = () => {
       heats,
       typeMoney: typeMoneyValue(),
       furnished,
+      typeUnit,
+      bedsValue,
     };
-    console.log(currentData);
-    
     const response = httpService.post(`/dashboard/create/${locale}`, {
       title: currentData.title,
       price: currentData.minPrice,
@@ -183,7 +202,7 @@ const AddProperty = () => {
       location: currentData.locationValue,
       area: currentData.areaValue,
       baths: currentData.baths,
-      beds: currentData.beds,
+      beds: currentData.bedsValue,
       sqt: currentData.sqt,
       distToShop: currentData.distShop,
       distToAirport: currentData.distAirport,
@@ -204,6 +223,11 @@ const AddProperty = () => {
       distToSea: currentData.distSea,
       landscapesArr: currentData.landscapes,
       heatingTypesArr: currentData.heats,
+      houseTypesArr: currentData.typeUnit,
+      distToShopType: currentData.shopType,
+      distToAirportType: currentData.airportType,
+      distToHospitalType: currentData.hospitalType,
+      distToSeaType: currentData.seaType,
     });
     toast.promise(
       response,
@@ -222,7 +246,7 @@ const AddProperty = () => {
           render({ data }: any) {
             setLoading(false);
             console.log(data);
-            
+
             return t("properties.crudProperty.isError");
           },
         },
@@ -232,7 +256,10 @@ const AddProperty = () => {
       }
     );
   };
-
+  const selectedTypesUnit = typeUnit.map((id) => {
+    const selectedOption = typeHouses.find((option) => option.id === id);
+    return selectedOption ? selectedOption.name : "";
+  });
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-center items-center">
@@ -306,89 +333,7 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-        {/* price */}
-        <div className="col-span-12 lg:col-span-4 formItem">
-          <div className="grid grid-cols-12 gap-x-2">
-            <div className={money ? "col-span-6" : "col-span-12"}>
-              <label className="dark:text-white" htmlFor="">
-                {t("properties.crudProperty.minprice")}:
-              </label>
-              <br />
-              <input
-                {...register("minPrice", {
-                  required: true,
-                })}
-                onChange={(e) => {
-                  handlePrice(e.target.value, "min");
-                }}
-                className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-                placeholder={t("properties.crudProperty.placeholder")}
-                type="number"
-              />
-            </div>
-            <div className={money ? "col-span-6" : " hidden"}>
-              <label className="dark:text-white" htmlFor="">
-                {t("properties.crudProperty.maxprice")}:
-              </label>
-              <br />
-              <input
-                {...register("maxPrice")}
-                onChange={(e) => {
-                  handlePrice(e.target.value, "max");
-                }}
-                className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-                placeholder={t("properties.crudProperty.placeholder")}
-                type="number"
-              />
-            </div>
-            <div className="col-span-12 flex justify-between items-center gap-x-2 dark:text-white pt-2">
-              <div className="flex justify-start items-center gap-x-2">
-                <button
-                  onClick={() => setTypeMoney(0)}
-                  type="button"
-                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
-                    typeMoney === 0 && "bg-blue-600 text-white"
-                  } `}
-                >
-                  <FaDollarSign size={18} />
-                </button>
-                <button
-                  onClick={() => setTypeMoney(1)}
-                  type="button"
-                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
-                    typeMoney === 1 && "bg-blue-600 text-white"
-                  } `}
-                >
-                  <MdOutlineCurrencyRuble size={18} />
-                </button>
-                <button
-                  onClick={() => setTypeMoney(2)}
-                  type="button"
-                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
-                    typeMoney === 2 && "bg-blue-600 text-white"
-                  } `}
-                >
-                  <IoLogoEuro size={18} />
-                </button>
-              </div>
-              <div className="flex justify-end items-center gap-x-2">
-                <div className="flex justify-end items-center gap-x-2 h-[30px]">
-                  <label htmlFor="labelCheckPrice">
-                    {t("properties.crudProperty.activation")}
-                  </label>
-                  <input
-                    id="labelCheckPrice"
-                    type="checkbox"
-                    onChange={(e) => {
-                      setIsMoney(e.target.checked ? true : false);
-                    }}
-                  />
-                </div>
-                <p>{money ? `${minMoney} - ${maxMoney}` : minMoney}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+
         {/* baths */}
         <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
@@ -424,28 +369,36 @@ const AddProperty = () => {
             {t("properties.crudProperty.beds")}:
           </label>
           <br />
-          <input
-            {...register("beds", {
-              required: true,
-              maxLength: 5,
-              minLength: 1,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="number"
-          />
-          {errors.beds && errors.beds.type === "required" && (
+          <Select
+            onValueChange={(value) => {
+              setBedsValue(value);
+            }}
+          >
+            <SelectTrigger className="w-full mt-3">
+              {!bedsValue
+                ? `${t("properties.submitForms.select.bedsSelect")}`
+                : bedsValue}
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectGroup>
+                <SelectLabel>
+                  {t("properties.submitForms.select.bedsSelect")}
+                </SelectLabel>
+                {typeHouses.map((typeU) => {
+                  return (
+                    <SelectItem key={typeU.id} value={typeU.name}>
+                      {typeU.name.toUpperCase()}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {errors.beds && errors.beds.type === "validate" && (
             <AlertValidation>
               {t("properties.submitForms.addProperty.bedsReqError")}
             </AlertValidation>
           )}
-          {errors.beds &&
-            (errors.beds.type === "maxLength" ||
-              errors.beds.type === "minLength") && (
-              <AlertValidation>
-                {t("properties.submitForms.addProperty.bedsLengthError")}
-              </AlertValidation>
-            )}
         </div>
         {/* sqt */}
         <div className="col-span-12 lg:col-span-4 formItem">
@@ -467,21 +420,41 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-
         {/* shopping */}
         <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.distance.shop")}:
           </label>
           <br />
-          <input
-            {...register("distShop", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="number"
-          />
+          <div className="w-full relative ">
+            <input
+              {...register("distShop", {
+                required: true,
+              })}
+              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+              placeholder={t("properties.crudProperty.placeholder")}
+              type="number"
+            />
+            <div className="absolute top-10 -right-5 translate-x-[-50%] translate-y-[-50%] flex justify-end items-center gap-x-1">
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input type="radio" value="m" {...register("shopType")} />
+                  <span>M</span>
+                </label>
+              </div>
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input
+                    checked
+                    type="radio"
+                    value="km"
+                    {...register("shopType")}
+                  />
+                  <span>KM</span>
+                </label>
+              </div>
+            </div>
+          </div>
           {errors.distShop && errors.distShop.type === "required" && (
             <AlertValidation>
               {t("properties.submitForms.addProperty.distanceReqError")}
@@ -494,14 +467,35 @@ const AddProperty = () => {
             {t("properties.crudProperty.distance.airport")}:
           </label>
           <br />
-          <input
-            {...register("distAirport", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="number"
-          />
+          <div className="w-full relative ">
+            <input
+              {...register("distAirport", {
+                required: true,
+              })}
+              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+              placeholder={t("properties.crudProperty.placeholder")}
+              type="number"
+            />
+            <div className="absolute top-10 -right-5 translate-x-[-50%] translate-y-[-50%] flex justify-end items-center gap-x-1">
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input type="radio" value="m" {...register("airportType")} />
+                  <span>M</span>
+                </label>
+              </div>
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input
+                    checked
+                    type="radio"
+                    value="km"
+                    {...register("airportType")}
+                  />
+                  <span>KM</span>
+                </label>
+              </div>
+            </div>
+          </div>
           {errors.distAirport && errors.distAirport.type === "required" && (
             <AlertValidation>
               {t("properties.submitForms.addProperty.distanceReqError")}
@@ -514,14 +508,35 @@ const AddProperty = () => {
             {t("properties.crudProperty.distance.hospital")}:
           </label>
           <br />
-          <input
-            {...register("distHospital", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="number"
-          />
+          <div className="w-full relative">
+            <input
+              {...register("distHospital", {
+                required: true,
+              })}
+              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+              placeholder={t("properties.crudProperty.placeholder")}
+              type="number"
+            />
+            <div className="absolute top-10 -right-5 translate-x-[-50%] translate-y-[-50%] flex justify-end items-center gap-x-1">
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input type="radio" value="m" {...register("hospitalType")} />
+                  <span>M</span>
+                </label>
+              </div>
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input
+                    checked
+                    type="radio"
+                    value="km"
+                    {...register("hospitalType")}
+                  />
+                  <span>KM</span>
+                </label>
+              </div>
+            </div>
+          </div>
           {errors.distHospital && errors.distHospital.type === "required" && (
             <AlertValidation>
               {t("properties.submitForms.addProperty.distanceReqError")}
@@ -534,14 +549,35 @@ const AddProperty = () => {
             {t("properties.crudProperty.distance.sea")}:
           </label>
           <br />
-          <input
-            {...register("distSea", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="number"
-          />
+          <div className="w-full relative">
+            <input
+              {...register("distSea", {
+                required: true,
+              })}
+              className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+              placeholder={t("properties.crudProperty.placeholder")}
+              type="number"
+            />
+            <div className="absolute top-10 -right-5 translate-x-[-50%] translate-y-[-50%] flex justify-end items-center gap-x-1">
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input type="radio" value="m" {...register("seaType")} />
+                  <span>M</span>
+                </label>
+              </div>
+              <div className="flex justify-center items-center">
+                <label className="flex justify-end items-center gap-x-1">
+                  <input
+                    checked
+                    type="radio"
+                    value="km"
+                    {...register("seaType")}
+                  />
+                  <span>KM</span>
+                </label>
+              </div>
+            </div>
+          </div>
           {errors.distSea && errors.distSea.type === "required" && (
             <AlertValidation>
               {t("properties.submitForms.addProperty.distSeaReqError")}
@@ -649,6 +685,161 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
+        {/* price */}
+        <div className="col-span-12 lg:col-span-4 formItem">
+          <div className="grid grid-cols-12 gap-x-2">
+            <div className={money ? "col-span-6" : "col-span-12"}>
+              <label className="dark:text-white" htmlFor="">
+                {t("properties.crudProperty.minprice")}:
+              </label>
+              <br />
+              <input
+                {...register("minPrice", {
+                  required: true,
+                })}
+                onChange={(e) => {
+                  handlePrice(e.target.value, "min");
+                }}
+                className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+                placeholder={t("properties.crudProperty.placeholder")}
+                type="number"
+              />
+            </div>
+            <div className={money ? "col-span-6" : " hidden"}>
+              <label className="dark:text-white" htmlFor="">
+                {t("properties.crudProperty.maxprice")}:
+              </label>
+              <br />
+              <input
+                {...register("maxPrice")}
+                onChange={(e) => {
+                  handlePrice(e.target.value, "max");
+                }}
+                className="bg-white border w-full p-2 outline-none rounded-md mt-3"
+                placeholder={t("properties.crudProperty.placeholder")}
+                type="number"
+              />
+            </div>
+            <div className="col-span-12 flex justify-between items-center gap-x-2 dark:text-white pt-2">
+              <div className="flex justify-start items-center gap-x-2">
+                <button
+                  onClick={() => setTypeMoney(0)}
+                  type="button"
+                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
+                    typeMoney === 0 && "bg-blue-600 text-white"
+                  } `}
+                >
+                  <FaDollarSign size={18} />
+                </button>
+                <button
+                  onClick={() => setTypeMoney(1)}
+                  type="button"
+                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
+                    typeMoney === 1 && "bg-blue-600 text-white"
+                  } `}
+                >
+                  <MdOutlineCurrencyRuble size={18} />
+                </button>
+                <button
+                  onClick={() => setTypeMoney(2)}
+                  type="button"
+                  className={`border border-blue-600 rounded-full p-1 text-blue-600 hover:bg-blue-600 hover:text-white transition-all ${
+                    typeMoney === 2 && "bg-blue-600 text-white"
+                  } `}
+                >
+                  <IoLogoEuro size={18} />
+                </button>
+              </div>
+              <div className="flex justify-end items-center gap-x-2">
+                <div className="flex justify-end items-center gap-x-2 h-[30px]">
+                  <label htmlFor="labelCheckPrice">
+                    {t("properties.crudProperty.activation")}
+                  </label>
+                  <input
+                    id="labelCheckPrice"
+                    type="checkbox"
+                    onChange={(e) => {
+                      setIsMoney(e.target.checked ? true : false);
+                    }}
+                  />
+                </div>
+                <p>{money ? `${minMoney} - ${maxMoney}` : minMoney}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* type unit */}
+        {money && (
+          <div className="col-span-12 lg:col-span-3 formItem">
+            <label className="dark:text-white" htmlFor="">
+              {t("properties.crudProperty.unitType")}:
+            </label>
+            <br />
+
+            <Popover>
+              <PopoverTrigger
+                asChild
+                className="w-full h-[60px] bg-white border p-2 outline-none rounded-md mt-3"
+              >
+                <button className="bg-white outline-none text-start flex justify-between items-center">
+                  <span>{t("properties.crudProperty.unitTypeSelect")}</span>
+                  <span>
+                    <MdOutlineKeyboardArrowDown
+                      className="text-slate-400"
+                      size={18}
+                    />
+                  </span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="bg-white w-[150px] p-0">
+                <div className="grid gap-4 w-full py-2">
+                  <div>
+                    {typeHouses.map((typeH) => {
+                      return (
+                        <div
+                          className="px-2 py-1 mb-2 flex justify-start items-center gap-x-2 hover:bg-blue-600 hover:text-white font-bold transition-all"
+                          key={typeH.id}
+                        >
+                          <input
+                            onChange={() => {
+                              setTypeUnit((prev) =>
+                                prev.includes(typeH.id)
+                                  ? prev.filter((item) => item !== typeH.id)
+                                  : [...prev, typeH.id]
+                              );
+                            }}
+                            id={`typeHouses+${typeH.id}`}
+                            type="checkbox"
+                            checked={typeUnit.includes(typeH.id)}
+                          />
+                          <label
+                            className="w-full cursor-pointer"
+                            htmlFor={`typeHouses+${typeH.id}`}
+                          >
+                            {typeH.name}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <ul className="flex justify-start items-center gap-x-2 mt-1 overflow-x-scroll scrollbar-custom">
+              {selectedTypesUnit.length >= 0 &&
+                selectedTypesUnit.map((typeUnitOp, index) => {
+                  return (
+                    <li
+                      className="bg-blue-600 rounded-[40px] px-3 text-white"
+                      key={index}
+                    >
+                      {typeUnitOp}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        )}
         {/* location */}
         <div className="col-span-12 lg:col-span-3 formItem">
           <label className="dark:text-white" htmlFor="">
@@ -659,13 +850,11 @@ const AddProperty = () => {
             onValueChange={(value) => {
               setLocationValue(value);
               const locKey = locs.find((loc) => loc.location_key === value);
-              getAreaList(locKey?.id);
+              setLocationId(locKey?.id);
             }}
           >
             <SelectTrigger className="w-full mt-3">
-              {locationValue === 0
-                ? `${t("properties.crudProperty.location")}`
-                : locationValue.toUpperCase()}
+              {t("properties.crudProperty.location")}
             </SelectTrigger>
             <SelectContent className="bg-white">
               <SelectGroup>

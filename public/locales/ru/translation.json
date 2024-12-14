@@ -28,7 +28,7 @@
   "properties": {
     "crudProperty": {
       "upload" : "Загрузить",
-      "floor": "Пол",
+      "floor": "Этаж",
       "ageOfBuilding": "Возраст Здания",
       "title": "Заголовок",
       "location": "Расположение",
@@ -36,7 +36,7 @@
       "maxprice": "Максимальная цена",
       "minprice": "Минимальная цена",
       "baths": "Ванны",
-      "beds": "Кровати",
+      "beds": "спальная комната",
       "sqt": "Sqt",
       "type": "Тип",
       "tag": "Ярлык",
@@ -66,10 +66,14 @@
       "landscape" :"пейзаж",
       "tagLabel" : "Теги",
       "features" : "Особенности",
-      "activation" : "Активация"
+      "activation" : "Активация",
+      "unitType" : "всего комнат",
+      "unitTypeSelect" : "Выбрать номера",
+      "bedsSelect" : "Выбрать кровати"
     },
     "submitForms": {
       "select": {
+        "bedsSelect" : "Select Beds",
         "furnished": "Выбрать меблированный",
         "location": "Выберите местоположение",
         "area": "Выберите область"

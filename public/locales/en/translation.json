@@ -66,14 +66,17 @@
       "landscape" : "The Landscapes",
       "tagLabel" : "The Tags",
       "features" : "The Features",
-      "activation" : "Activation"
+      "activation" : "Activation",
+      "unitType" : "Rooms",
+      "unitTypeSelect" : "Select Rooms"
 
     },
     "submitForms":{
       "select" : {
         "furnished" : "Select Furnished",
         "location" : "Select Location",
-        "area" : "Select Area"
+        "area" : "Select Area",
+        "bedsSelect" : "Select Beds"
       },
       "addProperty" : {
         "titleReqError" : "Please Enter Title Value",

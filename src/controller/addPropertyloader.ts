@@ -3,27 +3,40 @@ import { RegisterAction } from "@/types/identity";
 import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export const getAddData = async () => {
-  const locale = localStorage.getItem("language");
-  const features = await httpService.get(
-    `/dashboard/properties/features/${locale}`
-  );
-  const locations = await httpService.get(`/real-estates/locations/${locale}`);
-  const types = await httpService.get(`/dashboard/properties/types/${locale}`);
-  const tags = await httpService.get(`/dashboard/properties/tags/${locale}`);
-  const landscapes = await httpService.get(
-    `/dashboard/properties/landscapes/${locale}`
-  );
-  const heating = await httpService.get(
-    `/dashboard/properties/heating-types/${locale}`
-  );
+export const getAddData = async ({request} : {request : Request}) => {
+  // const locale = localStorage.getItem("language");
+  const url = new URL(request.url);
+  const locale = url.searchParams.get("lang") || localStorage.getItem("language");
+  console.log(locale);
+  const [features, locations, types, tags, landscapes, heating,typeHouses] = await Promise.all([
+    httpService.get(`/dashboard/properties/features/${locale}`),
+    httpService.get(`/real-estates/locations/${locale}`),
+    httpService.get(`/dashboard/properties/types/${locale}`),
+    httpService.get(`/dashboard/properties/tags/${locale}`),
+    httpService.get(`/dashboard/properties/landscapes/${locale}`),
+    httpService.get(`/dashboard/properties/heating-types/${locale}`),
+    httpService.get(`/dashboard/properties/house-types`),
+  ]);
+  // const features = await httpService.get(
+  //   `/dashboard/properties/features/${locale}`
+  // );
+  // const locations = await httpService.get(`/real-estates/locations/${locale}`);
+  // const types = await httpService.get(`/dashboard/properties/types/${locale}`);
+  // const tags = await httpService.get(`/dashboard/properties/tags/${locale}`);
+  // const landscapes = await httpService.get(
+  //   `/dashboard/properties/landscapes/${locale}`
+  // );
+  // const heating = await httpService.get(
+  //   `/dashboard/properties/heating-types/${locale}`
+  // );
   if (
     locations.status === 200 &&
     types.status === 200 &&
     tags.status === 200 &&
     features.status === 200 &&
     landscapes.status === 200 &&
-    heating.status === 200
+    heating.status === 200 &&
+    typeHouses.status === 200
   ) {
     return {
       locs: locations.data,
@@ -32,6 +45,7 @@ export const getAddData = async () => {
       features: features.data,
       landscapesData: landscapes.data,
       heating: heating.data,
+      typeHouses : typeHouses.data
     };
   }
 };

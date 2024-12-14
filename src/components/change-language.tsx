@@ -5,15 +5,20 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import {useState } from "react";
+import { useState } from "react";
 import usFlag from "@/assets/images/us.png";
 import ruflag from "@/assets/images/ru.jpg"
 import { useAppContext } from "@/contexts/app/app-context";
+import { useNavigate } from "react-router-dom";
 
 const ChangeLanguage = () => {
   const { language, changeLanguage } = useAppContext();
   const [position, setPosition] = useState<string>("");
-
+  const navigate = useNavigate()
+  const handleLanguageChange = (lang : string) => {
+    navigate(`?lang=${lang}`);    
+    changeLanguage(lang);
+  }
   return (
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger className="outline-none p-0 ms-2 hover:scale-110 transition-all rounded-full overflow-hidden w-5 h-5">
@@ -31,7 +36,7 @@ const ChangeLanguage = () => {
       >
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
           <DropdownMenuRadioItem
-            onClick={() => changeLanguage("en")}
+            onClick={() => handleLanguageChange("en")}
             className="outline-none cursor-pointer"
             value="2"
           >
@@ -51,7 +56,7 @@ const ChangeLanguage = () => {
             </div>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
-            onClick={() => changeLanguage("ru")}
+            onClick={() => handleLanguageChange("ru")}
             className="outline-none cursor-pointer"
             value="2"
           >

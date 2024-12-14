@@ -20,7 +20,7 @@ const initialState: AppReducerType = {
   changeLanguage: () => {},
   changeTheme: () => {},
   theme: localStorage.getItem("theme") || "light",
-  showSidebar : true,
+  showSidebar : false,
   toggleSidebar : () => {},
 };
 const AppContext = createContext<AppContextType | undefined>(undefined);
