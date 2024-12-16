@@ -179,6 +179,7 @@ const AddProperty = () => {
       }
       return moneyValue;
     };
+    
     const currentData = {
       ...data,
       images: images.map(({ id, ...img }) => img),
@@ -260,6 +261,35 @@ const AddProperty = () => {
     const selectedOption = typeHouses.find((option) => option.id === id);
     return selectedOption ? selectedOption.name : "";
   });
+  const bedsList: { id: number; name: string }[] = [
+    {
+      id: 0,
+      name: "1",
+    },
+    {
+      id: 1,
+      name: "2",
+    },
+    {
+      id: 3,
+      name: "3",
+    },
+    {
+      id: 4,
+      name: "4",
+    },
+    {
+      id: 5,
+      name: "5",
+    },
+    {
+      id: 6,
+      name: "+5",
+    },
+  ];
+  useEffect(()=>{
+    setTypeUnit([])
+  },[money])
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-center items-center">
@@ -384,7 +414,7 @@ const AddProperty = () => {
                 <SelectLabel>
                   {t("properties.submitForms.select.bedsSelect")}
                 </SelectLabel>
-                {typeHouses.map((typeU) => {
+                {bedsList.map((typeU) => {
                   return (
                     <SelectItem key={typeU.id} value={typeU.name}>
                       {typeU.name.toUpperCase()}
@@ -769,77 +799,81 @@ const AddProperty = () => {
           </div>
         </div>
         {/* type unit */}
-        {money && (
-          <div className="col-span-12 lg:col-span-3 formItem">
-            <label className="dark:text-white" htmlFor="">
-              {t("properties.crudProperty.unitType")}:
-            </label>
-            <br />
+        <div className="col-span-12 lg:col-span-3 formItem">
+          <label className="dark:text-white" htmlFor="">
+            {t("properties.crudProperty.unitType")}:
+          </label>
+          <br />
 
-            <Popover>
-              <PopoverTrigger
-                asChild
-                className="w-full h-[60px] bg-white border p-2 outline-none rounded-md mt-3"
-              >
-                <button className="bg-white outline-none text-start flex justify-between items-center">
-                  <span>{t("properties.crudProperty.unitTypeSelect")}</span>
-                  <span>
-                    <MdOutlineKeyboardArrowDown
-                      className="text-slate-400"
-                      size={18}
-                    />
-                  </span>
-                </button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="bg-white w-[150px] p-0">
-                <div className="grid gap-4 w-full py-2">
-                  <div>
-                    {typeHouses.map((typeH) => {
-                      return (
-                        <div
-                          className="px-2 py-1 mb-2 flex justify-start items-center gap-x-2 hover:bg-blue-600 hover:text-white font-bold transition-all"
-                          key={typeH.id}
-                        >
-                          <input
-                            onChange={() => {
+          <Popover>
+            <PopoverTrigger
+              asChild
+              className="w-full h-[60px] bg-white border p-2 outline-none rounded-md mt-3"
+            >
+              <button className="bg-white outline-none text-start flex justify-between items-center">
+                <span>{t("properties.crudProperty.unitTypeSelect")}</span>
+                <span>
+                  <MdOutlineKeyboardArrowDown
+                    className="text-slate-400"
+                    size={18}
+                  />
+                </span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="bg-white w-[150px] p-0">
+              <div className="grid gap-4 w-full py-2">
+                <div>
+                  {typeHouses.map((typeH) => {
+                    return (
+                      <div
+                        className="px-2 py-1 mb-2 flex justify-start items-center gap-x-2 hover:bg-blue-600 hover:text-white font-bold transition-all"
+                        key={typeH.id}
+                      >
+                        <input
+                          onChange={() => {
+                            if (money) {
                               setTypeUnit((prev) =>
                                 prev.includes(typeH.id)
                                   ? prev.filter((item) => item !== typeH.id)
                                   : [...prev, typeH.id]
                               );
-                            }}
-                            id={`typeHouses+${typeH.id}`}
-                            type="checkbox"
-                            checked={typeUnit.includes(typeH.id)}
-                          />
-                          <label
-                            className="w-full cursor-pointer"
-                            htmlFor={`typeHouses+${typeH.id}`}
-                          >
-                            {typeH.name}
-                          </label>
-                        </div>
-                      );
-                    })}
-                  </div>
+                            } else {
+                              setTypeUnit([typeH.id]);
+                            }
+                          }}
+                          id={`typeHouses+${typeH.id}`}
+                          type={money ? "checkbox" : "radio"}
+                          name={!money ? "roomsItemUnit" : ""}
+                          checked={typeUnit.includes(typeH.id)}
+                        />
+                        <label
+                          className="w-full cursor-pointer"
+                          htmlFor={`typeHouses+${typeH.id}`}
+                        >
+                          {typeH.name}
+                        </label>
+                      </div>
+                    );
+                  })}
                 </div>
-              </PopoverContent>
-            </Popover>
-            <ul className="flex justify-start items-center gap-x-2 mt-1 overflow-x-scroll scrollbar-custom">
-              {selectedTypesUnit.length >= 0 &&
-                selectedTypesUnit.map((typeUnitOp, index) => {
-                  return (
-                    <li
-                      className="bg-blue-600 rounded-[40px] px-3 text-white"
-                      key={index}
-                    >
-                      {typeUnitOp}
-                    </li>
-                  );
-                })}
-            </ul>
-          </div>
-        )}
+              </div>
+            </PopoverContent>
+          </Popover>
+          <ul className="flex justify-start items-center gap-x-2 mt-1 overflow-x-scroll scrollbar-custom">
+            {selectedTypesUnit.length >= 0 &&
+              selectedTypesUnit.map((typeUnitOp, index) => {
+                return (
+                  <li
+                    className="bg-blue-600 rounded-[40px] px-3 text-white"
+                    key={index}
+                  >
+                    {typeUnitOp}
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+
         {/* location */}
         <div className="col-span-12 lg:col-span-3 formItem">
           <label className="dark:text-white" htmlFor="">
