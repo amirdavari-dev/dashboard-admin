@@ -23,7 +23,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FaDollarSign } from "react-icons/fa6";
-import { IoLogoEuro } from "react-icons/io5";
+import { IoCloudUploadOutline, IoLogoEuro } from "react-icons/io5";
 import {
   MdOutlineCurrencyRuble,
   MdOutlineKeyboardArrowDown,
@@ -57,7 +57,9 @@ const AddProperty = () => {
   const [typeValue, setTypeValue] = useState<string | 0>(0);
   const [furnished, setFurnished] = useState<boolean | null>(null);
   const [imgCounter, setImageCounter] = useState<number>(0);
-  // const [tagValue, setTagValue] = useState<string | 0>(0);
+  const [downloadPdf, setDownloadPdf] = useState<
+    { name: string; file: string; order: number }[]
+  >([]);
   const [images, setImages] = useState<
     { id: string; image: string; name: string; order: number }[]
   >([]);
@@ -120,6 +122,29 @@ const AddProperty = () => {
       reader.readAsDataURL(file);
     });
   };
+  const handlePdfDownload = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const newPdf: {
+      file: string;
+      name: string;
+      order: number;
+    }[] = [];
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          newPdf.push({
+            file: reader.result.toString(),
+            name: file.name,
+            order: newPdf.length + 1,
+          });
+          setDownloadPdf((prev) => [...prev, ...newPdf]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
   const handleDelete = (id: string) => {
     setImages((imgs) => imgs.filter((img) => img.id !== id));
   };
@@ -163,7 +188,6 @@ const AddProperty = () => {
       typeMoney === "max" ? setMaxMoney(text) : setMinMoney(text);
     }
   };
-
   // Submiting
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<FormData> = async (data) => {
@@ -179,7 +203,6 @@ const AddProperty = () => {
       }
       return moneyValue;
     };
-    
     const currentData = {
       ...data,
       images: images.map(({ id, ...img }) => img),
@@ -194,6 +217,7 @@ const AddProperty = () => {
       furnished,
       typeUnit,
       bedsValue,
+      downloadPdf,
     };
     const response = httpService.post(`/dashboard/create/${locale}`, {
       title: currentData.title,
@@ -212,7 +236,7 @@ const AddProperty = () => {
       details: currentData.description,
       buyMedia: currentData.buyPropertyLink,
       availableMedia: currentData.availablePropertyLink,
-      download: currentData.brochureLink,
+      download: "",
       imagesArr: currentData.images,
       tagsArr: currentData.tagsArr,
       featuresArr: currentData.features,
@@ -229,6 +253,7 @@ const AddProperty = () => {
       distToAirportType: currentData.airportType,
       distToHospitalType: currentData.hospitalType,
       distToSeaType: currentData.seaType,
+      downloadsArr: currentData.downloadPdf,
     });
     toast.promise(
       response,
@@ -287,9 +312,9 @@ const AddProperty = () => {
       name: "+5",
     },
   ];
-  useEffect(()=>{
-    setTypeUnit([])
-  },[money])
+  useEffect(() => {
+    setTypeUnit([]);
+  }, [money]);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-center items-center">
@@ -342,7 +367,7 @@ const AddProperty = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-12 gap-5 mb-5 px-4">
+      <div className="grid grid-cols-12 gap-5 lg:gap-y-6 mb-5 px-4">
         {/* title */}
         <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
@@ -363,7 +388,6 @@ const AddProperty = () => {
             </AlertValidation>
           )}
         </div>
-
         {/* baths */}
         <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
@@ -616,20 +640,6 @@ const AddProperty = () => {
         </div>
         <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
-            {t("properties.crudProperty.attachment.download")}:
-          </label>
-          <br />
-          <input
-            {...register("brochureLink", {
-              required: true,
-            })}
-            className="bg-white border w-full p-2 outline-none rounded-md mt-3"
-            placeholder={t("properties.crudProperty.placeholder")}
-            type="text"
-          />
-        </div>
-        <div className="col-span-12 lg:col-span-4 formItem">
-          <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.buyVideo")}:
           </label>
           <br />
@@ -799,7 +809,7 @@ const AddProperty = () => {
           </div>
         </div>
         {/* type unit */}
-        <div className="col-span-12 lg:col-span-3 formItem">
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.unitType")}:
           </label>
@@ -822,7 +832,7 @@ const AddProperty = () => {
             </PopoverTrigger>
             <PopoverContent align="start" className="bg-white w-[150px] p-0">
               <div className="grid gap-4 w-full py-2">
-                <div>
+                <div className="h-[200px] overflow-y-scroll scrollbar-custom">
                   {typeHouses.map((typeH) => {
                     return (
                       <div
@@ -873,9 +883,8 @@ const AddProperty = () => {
               })}
           </ul>
         </div>
-
         {/* location */}
-        <div className="col-span-12 lg:col-span-3 formItem">
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.location")}:
           </label>
@@ -908,7 +917,7 @@ const AddProperty = () => {
         </div>
         {/* area */}
         {locationValue !== 0 && (
-          <div className="col-span-12 lg:col-span-3 formItem">
+          <div className="col-span-12 lg:col-span-4 formItem">
             <label className="dark:text-white" htmlFor="">
               {t("properties.crudProperty.area")}:
             </label>
@@ -943,7 +952,7 @@ const AddProperty = () => {
           </div>
         )}
         {/* type */}
-        <div className="col-span-12 lg:col-span-3 formItem">
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.type")}:
           </label>
@@ -973,7 +982,7 @@ const AddProperty = () => {
           </Select>
         </div>
         {/* furnished */}
-        <div className="col-span-12 lg:col-span-3 formItem">
+        <div className="col-span-12 lg:col-span-4 formItem">
           <label className="dark:text-white" htmlFor="">
             {t("properties.crudProperty.furnished")}:
           </label>
@@ -1002,6 +1011,54 @@ const AddProperty = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
+        {/* pdf */}
+        <div className="col-span-12 lg:col-span-4">
+          <div>
+            <label className="dark:text-white" htmlFor="">
+              {t("properties.crudProperty.attachment.download")}:
+            </label>
+          </div>
+          <div className="mt-3">
+            <label
+              htmlFor="filePdfUpload"
+              className="bg-blue-600 h-[58px] hover:bg-blue-500 transition-all w-full cursor-pointer p-3 rounded-md text-white flex justify-start items-center gap-x-2"
+            >
+              <input
+                onChange={handlePdfDownload}
+                accept="application/pdf"
+                multiple
+                id="filePdfUpload"
+                className="hidden"
+                type="file"
+              />
+              <span>
+                <IoCloudUploadOutline size={20} />
+              </span>
+              <span>Upload File PDF</span>
+            </label>
+          </div>
+          {downloadPdf.length > 0 && (
+            <div className="overflow-x-scroll mt-1 scrollbar-custom flex justify-start flex-nowrap whitespace-nowrap items-center gap-x-2">
+              {downloadPdf.map((pdf, index) => {
+                return (
+                  <p
+                    onClick={() => {
+                      const currenyPdf = downloadPdf.filter((pdfCurrent) => {
+                        return pdfCurrent.name !== pdf.name;
+                      });
+                      setDownloadPdf(currenyPdf);
+                    }}
+                    className=" text-sm bg-blue-400 text-white px-1 rounded-md cursor-pointer hover:bg-blue-600 transition-all"
+                    key={index}
+                    title={`Delete ${pdf.name}`}
+                  >
+                    {pdf.name}
+                  </p>
+                );
+              })}
+            </div>
+          )}
         </div>
         {/* more details */}
         <div className="col-span-12 md:col-span-12">

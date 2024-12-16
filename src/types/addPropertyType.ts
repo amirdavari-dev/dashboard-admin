@@ -11,7 +11,7 @@ export type FormData = {
   distShop: number;
   distAirport: number;
   distHospital: number;
-  brochureLink: string;
+  // brochureLink: string;
   buyPropertyLink: string;
   availablePropertyLink: string;
   description: string;

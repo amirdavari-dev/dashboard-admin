@@ -21,7 +21,7 @@ const App = () => {
   return (
     <div className="font-iranyekan">
       <RouterProvider router={Router} />
-      <ToastContainer className="font-iranyekan" rtl position="bottom-left" />
+      <ToastContainer className="font-iranyekan" position="bottom-left" />
     </div>
   )
 }
