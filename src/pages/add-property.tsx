@@ -329,10 +329,9 @@ const AddProperty = () => {
   useEffect(() => {
     setTypeUnit([]);
   }, [typePropertyValue]);
-  useEffect(()=>{
-    reset()
-
-  },[typePropertyValue , reset])
+  useEffect(() => {
+    reset();
+  }, [typePropertyValue, reset]);
   return (
     <>
       {typeProperty && (
@@ -346,7 +345,11 @@ const AddProperty = () => {
           <div className="flex justify-center items-center gap-x-4 my-5">
             <div>
               <label
-                className="bg-blue-600 p-3 rounded-2xl font-bold text-white cursor-pointer hover:scale-105 transition-all block"
+                className={`${
+                  typePropertyValue === "project"
+                    ? "bg-blue-600 text-white"
+                    : "text-blue-600 bg-white border border-blue-600"
+                } flex justify-center items-center gap-x-3 p-3 rounded-2xl font-bold cursor-pointer hover:scale-105 transition-all`}
                 htmlFor="projProp"
               >
                 <input
@@ -357,13 +360,17 @@ const AddProperty = () => {
                   checked={typePropertyValue === "project"}
                   type="radio"
                 />
-                {t("properties.addProperty.project")}
+                <span>{t("properties.addProperty.project")}</span>
               </label>
             </div>
             <div>
               <label
                 htmlFor="dfProp"
-                className="bg-blue-600 p-3 rounded-2xl font-bold text-white cursor-pointer hover:scale-105 transition-all block"
+                className={`${
+                  typePropertyValue === "defaultProperty"
+                    ? "bg-blue-600 text-white"
+                    : "text-blue-600 bg-white border border-blue-600"
+                } flex justify-center items-center gap-x-3 p-3 rounded-2xl font-bold cursor-pointer hover:scale-105 transition-all`}
               >
                 <input
                   onChange={(e) => setTypePropertyValue(e.target.value)}
@@ -373,7 +380,7 @@ const AddProperty = () => {
                   id="dfProp"
                   type="radio"
                 />
-                {t("properties.addProperty.defaultProperty")}
+                <span>{t("properties.addProperty.defaultProperty")}</span>
               </label>
             </div>
             <div>
@@ -413,7 +420,7 @@ const AddProperty = () => {
                   <button
                     onClick={() => setTypeProperty(true)}
                     className="bg-white p-2 rounded-2xl hover:bg-slate-200 transition-all hover:text-blue-600"
-                    >
+                  >
                     {t("properties.addProperty.changePosition")}
                   </button>
                 </div>
@@ -724,6 +731,194 @@ const AddProperty = () => {
                   </AlertValidation>
                 )}
               </div>
+              {/* location */}
+              <div className="col-span-12 lg:col-span-4 formItem">
+                <label className="dark:text-white" htmlFor="">
+                  {t("properties.crudProperty.location")}:
+                </label>
+                <br />
+                <Select
+                  onValueChange={(value) => {
+                    setLocationValue(value);
+                    const locKey = locs.find(
+                      (loc) => loc.location_key === value
+                    );
+                    setLocationId(locKey?.id);
+                  }}
+                >
+                  <SelectTrigger className="w-full mt-3">
+                    {t("properties.crudProperty.location")}
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectGroup>
+                      <SelectLabel>
+                        {t("properties.submitForms.select.location")}
+                      </SelectLabel>
+                      {locs.map((loc) => {
+                        return (
+                          <SelectItem key={loc.id} value={loc.location_key}>
+                            {loc.location_name.toUpperCase()}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              {/* area */}
+              {locationValue !== 0 && (
+                <div className="col-span-12 lg:col-span-4 formItem">
+                  <label className="dark:text-white" htmlFor="">
+                    {t("properties.crudProperty.area")}:
+                  </label>
+                  <br />
+                  <Select onValueChange={(value) => setAreaValue(value)}>
+                    <SelectTrigger className="w-full mt-3">
+                      {areaValue === 0
+                        ? `${t("properties.crudProperty.area")}`
+                        : areaValue.toUpperCase()}
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectGroup>
+                        <SelectLabel>
+                          {t("properties.submitForms.select.area")}
+                        </SelectLabel>
+                        {areaList.length === 0 ? (
+                          <SelectItem value="0">
+                            Not Found Area For This Location
+                          </SelectItem>
+                        ) : (
+                          areaList.map((area) => {
+                            return (
+                              <SelectItem key={area.id} value={area.area_key}>
+                                {area.area_name.toUpperCase()}
+                              </SelectItem>
+                            );
+                          })
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              {/* type */}
+              <div className="col-span-12 lg:col-span-4 formItem">
+                <label className="dark:text-white" htmlFor="">
+                  {t("properties.crudProperty.type")}:
+                </label>
+                <br />
+                <Select
+                  onValueChange={(value) => {
+                    setTypeValue(value);
+                  }}
+                >
+                  <SelectTrigger className="w-full mt-3">
+                    {typeValue === 0
+                      ? `${t("properties.crudProperty.type")}`
+                      : typeValue.toUpperCase()}
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectGroup>
+                      <SelectLabel>Select Type</SelectLabel>
+                      {types.map((type) => {
+                        return (
+                          <SelectItem key={type.id} value={type.name}>
+                            {type.name.toUpperCase()}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              {/* rooms */}
+              <div className="col-span-12 lg:col-span-4 formItem">
+                <label className="dark:text-white" htmlFor="">
+                  {t("properties.crudProperty.unitType")}:
+                </label>
+                <br />
+
+                <Popover>
+                  <PopoverTrigger
+                    asChild
+                    className="w-full h-[60px] bg-white border p-2 outline-none rounded-md mt-3"
+                  >
+                    <button className="bg-white outline-none text-start flex justify-between items-center">
+                      <span>{t("properties.crudProperty.unitTypeSelect")}</span>
+                      <span>
+                        <MdOutlineKeyboardArrowDown
+                          className="text-slate-400"
+                          size={18}
+                        />
+                      </span>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="start"
+                    className="bg-white w-[150px] p-0"
+                  >
+                    <div className="grid gap-4 w-full py-2">
+                      <div className="h-[200px] overflow-y-scroll scrollbar-custom">
+                        {typeHouses.map((typeH) => {
+                          return (
+                            <div
+                              className="px-2 py-1 mb-2 flex justify-start items-center gap-x-2 hover:bg-blue-600 hover:text-white font-bold transition-all"
+                              key={typeH.id}
+                            >
+                              <input
+                                onChange={() => {
+                                  if (typePropertyValue === "project") {
+                                    setTypeUnit((prev) =>
+                                      prev.includes(typeH.id)
+                                        ? prev.filter(
+                                            (item) => item !== typeH.id
+                                          )
+                                        : [...prev, typeH.id]
+                                    );
+                                  } else {
+                                    setTypeUnit([typeH.id]);
+                                  }
+                                }}
+                                id={`typeHouses+${typeH.id}`}
+                                type={
+                                  typePropertyValue === "project"
+                                    ? "checkbox"
+                                    : "radio"
+                                }
+                                name={
+                                  typePropertyValue === "defaultProperty"
+                                    ? "roomsItemUnit"
+                                    : ""
+                                }
+                                checked={typeUnit.includes(typeH.id)}
+                              />
+                              <label
+                                className="w-full cursor-pointer"
+                                htmlFor={`typeHouses+${typeH.id}`}
+                              >
+                                {typeH.name}
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <ul className="flex justify-start items-center gap-x-2 mt-1 overflow-x-scroll scrollbar-custom">
+                  {selectedTypesUnit.length >= 0 &&
+                    selectedTypesUnit.map((typeUnitOp, index) => {
+                      return (
+                        <li
+                          className="bg-blue-600 rounded-[40px] px-3 text-white"
+                          key={index}
+                        >
+                          {typeUnitOp}
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
               {/* shopping */}
               <div className="col-span-12 lg:col-span-4 formItem">
                 <label className="dark:text-white" htmlFor="">
@@ -753,7 +948,6 @@ const AddProperty = () => {
                     <div className="flex justify-center items-center">
                       <label className="flex justify-end items-center gap-x-1">
                         <input
-                          checked
                           type="radio"
                           value="km"
                           {...register("shopType")}
@@ -788,9 +982,10 @@ const AddProperty = () => {
                     <div className="flex justify-center items-center">
                       <label className="flex justify-end items-center gap-x-1">
                         <input
+                          {...register("airportType")}
+                          name="airportRadio"
                           type="radio"
                           value="m"
-                          {...register("airportType")}
                         />
                         <span>M</span>
                       </label>
@@ -798,10 +993,10 @@ const AddProperty = () => {
                     <div className="flex justify-center items-center">
                       <label className="flex justify-end items-center gap-x-1">
                         <input
-                          checked
+                          {...register("airportType")}
                           type="radio"
                           value="km"
-                          {...register("airportType")}
+                          name="airportRadio"
                         />
                         <span>KM</span>
                       </label>
@@ -844,7 +1039,6 @@ const AddProperty = () => {
                     <div className="flex justify-center items-center">
                       <label className="flex justify-end items-center gap-x-1">
                         <input
-                          checked
                           type="radio"
                           value="km"
                           {...register("hospitalType")}
@@ -890,7 +1084,6 @@ const AddProperty = () => {
                     <div className="flex justify-center items-center">
                       <label className="flex justify-end items-center gap-x-1">
                         <input
-                          checked
                           type="radio"
                           value="km"
                           {...register("seaType")}
@@ -1122,194 +1315,7 @@ const AddProperty = () => {
                   </div>
                 </div>
               </div>
-              {/* type unit */}
-              <div className="col-span-12 lg:col-span-4 formItem">
-                <label className="dark:text-white" htmlFor="">
-                  {t("properties.crudProperty.unitType")}:
-                </label>
-                <br />
 
-                <Popover>
-                  <PopoverTrigger
-                    asChild
-                    className="w-full h-[60px] bg-white border p-2 outline-none rounded-md mt-3"
-                  >
-                    <button className="bg-white outline-none text-start flex justify-between items-center">
-                      <span>{t("properties.crudProperty.unitTypeSelect")}</span>
-                      <span>
-                        <MdOutlineKeyboardArrowDown
-                          className="text-slate-400"
-                          size={18}
-                        />
-                      </span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    align="start"
-                    className="bg-white w-[150px] p-0"
-                  >
-                    <div className="grid gap-4 w-full py-2">
-                      <div className="h-[200px] overflow-y-scroll scrollbar-custom">
-                        {typeHouses.map((typeH) => {
-                          return (
-                            <div
-                              className="px-2 py-1 mb-2 flex justify-start items-center gap-x-2 hover:bg-blue-600 hover:text-white font-bold transition-all"
-                              key={typeH.id}
-                            >
-                              <input
-                                onChange={() => {
-                                  if (typePropertyValue === "project") {
-                                    setTypeUnit((prev) =>
-                                      prev.includes(typeH.id)
-                                        ? prev.filter(
-                                            (item) => item !== typeH.id
-                                          )
-                                        : [...prev, typeH.id]
-                                    );
-                                  } else {
-                                    setTypeUnit([typeH.id]);
-                                  }
-                                }}
-                                id={`typeHouses+${typeH.id}`}
-                                type={
-                                  typePropertyValue === "project"
-                                    ? "checkbox"
-                                    : "radio"
-                                }
-                                name={
-                                  typePropertyValue === "defaultProperty"
-                                    ? "roomsItemUnit"
-                                    : ""
-                                }
-                                checked={typeUnit.includes(typeH.id)}
-                              />
-                              <label
-                                className="w-full cursor-pointer"
-                                htmlFor={`typeHouses+${typeH.id}`}
-                              >
-                                {typeH.name}
-                              </label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <ul className="flex justify-start items-center gap-x-2 mt-1 overflow-x-scroll scrollbar-custom">
-                  {selectedTypesUnit.length >= 0 &&
-                    selectedTypesUnit.map((typeUnitOp, index) => {
-                      return (
-                        <li
-                          className="bg-blue-600 rounded-[40px] px-3 text-white"
-                          key={index}
-                        >
-                          {typeUnitOp}
-                        </li>
-                      );
-                    })}
-                </ul>
-              </div>
-              {/* location */}
-              <div className="col-span-12 lg:col-span-4 formItem">
-                <label className="dark:text-white" htmlFor="">
-                  {t("properties.crudProperty.location")}:
-                </label>
-                <br />
-                <Select
-                  onValueChange={(value) => {
-                    setLocationValue(value);
-                    const locKey = locs.find(
-                      (loc) => loc.location_key === value
-                    );
-                    setLocationId(locKey?.id);
-                  }}
-                >
-                  <SelectTrigger className="w-full mt-3">
-                    {t("properties.crudProperty.location")}
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectGroup>
-                      <SelectLabel>
-                        {t("properties.submitForms.select.location")}
-                      </SelectLabel>
-                      {locs.map((loc) => {
-                        return (
-                          <SelectItem key={loc.id} value={loc.location_key}>
-                            {loc.location_name.toUpperCase()}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              {/* area */}
-              {locationValue !== 0 && (
-                <div className="col-span-12 lg:col-span-4 formItem">
-                  <label className="dark:text-white" htmlFor="">
-                    {t("properties.crudProperty.area")}:
-                  </label>
-                  <br />
-                  <Select onValueChange={(value) => setAreaValue(value)}>
-                    <SelectTrigger className="w-full mt-3">
-                      {areaValue === 0
-                        ? `${t("properties.crudProperty.area")}`
-                        : areaValue.toUpperCase()}
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      <SelectGroup>
-                        <SelectLabel>
-                          {t("properties.submitForms.select.area")}
-                        </SelectLabel>
-                        {areaList.length === 0 ? (
-                          <SelectItem value="0">
-                            Not Found Area For This Location
-                          </SelectItem>
-                        ) : (
-                          areaList.map((area) => {
-                            return (
-                              <SelectItem key={area.id} value={area.area_key}>
-                                {area.area_name.toUpperCase()}
-                              </SelectItem>
-                            );
-                          })
-                        )}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-              {/* type */}
-              <div className="col-span-12 lg:col-span-4 formItem">
-                <label className="dark:text-white" htmlFor="">
-                  {t("properties.crudProperty.type")}:
-                </label>
-                <br />
-                <Select
-                  onValueChange={(value) => {
-                    setTypeValue(value);
-                  }}
-                >
-                  <SelectTrigger className="w-full mt-3">
-                    {typeValue === 0
-                      ? `${t("properties.crudProperty.type")}`
-                      : typeValue.toUpperCase()}
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectGroup>
-                      <SelectLabel>Select Type</SelectLabel>
-                      {types.map((type) => {
-                        return (
-                          <SelectItem key={type.id} value={type.name}>
-                            {type.name.toUpperCase()}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
               {/* furnished */}
               <div className="col-span-12 lg:col-span-4 formItem">
                 <label className="dark:text-white" htmlFor="">
