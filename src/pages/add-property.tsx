@@ -379,7 +379,7 @@ const AddProperty = () => {
             <div>
               <button
                 onClick={() => setTypeProperty(false)}
-                className="outline-none bg-emerald-500 w-[180px] p-3 rounded-2xl font-bold text-lg text-white cursor-pointer hover:scale-105 transition-all block"
+                className="outline-none bg-emerald-500 w-[180px] p-2 rounded-2xl font-bold text-lg text-white cursor-pointer hover:scale-105 transition-all block"
               >
                 {t("properties.addProperty.next")}
               </button>

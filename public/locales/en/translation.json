@@ -46,10 +46,10 @@
       "isInsert" : "The operation was successful Redirecting...",
       "placeholder" : "Enter the Value",
       "distance" : {
-        "shop" : "Distance to Shopping(Ex 5)km",
-        "hospital" : "Distance to Hospital(Ex 5)km",
-        "sea" : "Distance to the sea(Ex 5)km",
-        "airport" : "Distance to the Airport (Ex 5)km" 
+        "shop" : "Distance to Shopping(Ex:5)",
+        "hospital" : "Distance to Hospital(Ex:5)",
+        "sea" : "Distance to the sea(Ex:5)",
+        "airport" : "Distance to the Airport (Ex:5)" 
       },
       "attachment" : {
         "download" : "Download Free Brochure(Link)"
