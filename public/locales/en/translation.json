@@ -65,10 +65,14 @@
       "typeOfHeating" : "Types Of Heating",
       "landscape" : "The Landscapes",
       "tagLabel" : "Advantages",
-      "features" : "The Features",
+      "features" : "Infrastructures",
       "activation" : "Activation",
       "unitType" : "Rooms",
-      "unitTypeSelect" : "Select Rooms"
+      "unitTypeSelect" : "Select Rooms",
+      "maxBath" : "Max Bath",
+      "maxBeds" : "Max Beds",
+      "maxFloor" : "Max Floor",
+      "maxSqt" : "Max Sqt"
 
     },
     "submitForms":{
@@ -97,6 +101,14 @@
         "ageOfBuildingReqError" : "Please enter the year the house was built",
         "alertPrice" : ""
       }
+    },
+    "addProperty" : {
+      "chooseType" : "Choose Type Property",
+      "project" : "Project",
+      "defaultProperty" : "Default Property",
+      "next" : "Next",
+      "add" : "Add Property",
+      "changePosition" : "Change Position"
     },
     "mainData": {
       "addProperty" : "Add Property",

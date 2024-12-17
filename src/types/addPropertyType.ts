@@ -1,13 +1,17 @@
 export type FormData = {
-  floor: string;
+  floor: number;
+  maxFloor: number;
   ageOfBuilding: string;
   distSea: string;
   title: string;
   minPrice: number;
   maxPrice: number;
   baths: number;
+  maxBaths: number;
   beds: number;
+  maxBeds: number;
   sqt: number;
+  maxSqt: number;
   distShop: number;
   distAirport: number;
   distHospital: number;
@@ -16,13 +20,13 @@ export type FormData = {
   availablePropertyLink: string;
   description: string;
   mapLink: string;
-  shopType : "m" | "km"
-  airportType : "m" | "km"
-  hospitalType : "m" | "km"
-  seaType : "m" | "km"
+  shopType: "m" | "km";
+  airportType: "m" | "km";
+  hospitalType: "m" | "km";
+  seaType: "m" | "km";
 };
-export type HeatType ={ id: number; name: string; heating_type_key: string }
-export type LandType ={ id: number; name: string; landscape_key: string }
+export type HeatType = { id: number; name: string; heating_type_key: string };
+export type LandType = { id: number; name: string; landscape_key: string };
 export type AddPropertyDataType = {
   locs: {
     id: number;
@@ -34,7 +38,7 @@ export type AddPropertyDataType = {
   features: { id: number; name: string }[];
   landscapesData: LandType[];
   heating: HeatType[];
-  typeHouses : {id : number , name : string}[]
+  typeHouses: { id: number; name: string }[];
 };
 
 export type ImgsPropType = {

@@ -108,7 +108,7 @@ const Property = ({
         </div>
         {/* <div className="px-2 mt-1 flex justify-between items-center">
           <Link to="/">View</Link>
-          <Link to="/property-edit/3">Edit</Link>
+          <button>Delete</button>
         </div> */}
       </div>
     </div>

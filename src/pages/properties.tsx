@@ -5,6 +5,7 @@ import vecprop from "@/assets/images/vecprop.png";
 import { Suspense } from "react";
 import Property from "@/features/properties/property";
 import { GetRealEstatesType } from "@/types/addPropertyType";
+import Sppiner from "@/components/sppiner";
 const Properties = () => {
   const { showSidebar } = useAppContext();
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Properties = () => {
   const loaderData = useLoaderData() as GetRealEstatesType;
   return (
     <div>
-      <div className="p-2">
+      <div className="p-2 relative">
         <div className="flex justify-between items-center mb-5 mt-2">
           <button
             onClick={() => navigate("/add-property")}
@@ -29,12 +30,11 @@ const Properties = () => {
           {/* <Property baths={2} beds={1} images={["dc"]} location="Istanbul" metrage={98} price="92.0000" title="Property In Istanbul" type="Apartment" area="Kepez" /> */}
         </div>
         <Suspense
-          fallback={<p className="text-slate-500 text-sm">صبور باشید...</p>}
+          fallback={<Sppiner />}
         >
           <Await resolve={loaderData}>
-            <div></div>
             {loaderData ? (
-              <div className={`${showSidebar ? "lg:justify-start justify-center" : "lg:justify-start justify-center"} flex items-center flex-wrap gap-2`}>
+              <div className={`${showSidebar ? "lg:justify-start justify-center" : "lg:justify-start justify-center"} flex items-center flex-wrap gap-3 gap-y-8`}>
                 {loaderData.map(  
                   ({
                     area,

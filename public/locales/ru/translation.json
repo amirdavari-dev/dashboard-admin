@@ -19,7 +19,7 @@
   "mainLayout": {
     "sidebar": {
       "header": "Компания АЗПО",
-      "subText" : "Панель управления данными",
+      "subText": "Панель управления данными",
       "allproperties": "Добавить недвижимость",
       "categoryProperty": "Управление недвижимостью"
     },
@@ -27,7 +27,7 @@
   },
   "properties": {
     "crudProperty": {
-      "upload" : "Загрузить",
+      "upload": "Загрузить",
       "floor": "Этаж",
       "ageOfBuilding": "Год постройки",
       "title": "Заголовок",
@@ -62,17 +62,21 @@
       "furnishedOff": "НЕТ",
       "furnishedOn": "ДА",
       "furnished": "Продажа с мебелью",
-      "typeOfHeating" : "Виды Отопления",
-      "landscape" :"пейзаж",
-      "tagLabel" : "Теги",
-      "features" : "Особенности",
-      "activation" : "Активация",
-      "unitType" : "всего комнат",
-      "unitTypeSelect" : "Выбрать номера"
+      "typeOfHeating": "Виды Отопления",
+      "landscape": "пейзаж",
+      "tagLabel": "Теги",
+      "features": "Инфраструктура",
+      "activation": "Активация",
+      "unitType": "всего комнат",
+      "unitTypeSelect": "Выбрать номера",
+      "maxBath": "Максимальное количество ванных комнат",
+      "maxBeds": "Максимальное количество спален ",
+      "maxFloor": "Максимальный этаж",
+      "maxSqt": "Максимальная площадь (м2)"
     },
     "submitForms": {
       "select": {
-        "bedsSelect" : "Выбрать кровати",
+        "bedsSelect": "Выбрать кровати",
         "furnished": "Выбрать меблированный",
         "location": "Выберите местоположение",
         "area": "Выберите область"
@@ -94,8 +98,16 @@
         "mapLinkReqError": "Пожалуйста, введите идентификатор дома на карте",
         "floorReqError": "Введите количество этажей дома",
         "ageOfBuildingReqError": "Пожалуйста, укажите год постройки дома",
-        "alertPrice" : ""
+        "alertPrice": ""
       }
+    },
+    "addProperty": {
+      "chooseType": "Выберите тип недвижимости",
+      "project": "Проект",
+      "defaultProperty": "Недвижимость по умолчанию",
+      "next": "Далее",
+      "add": "Добавить недвижимость",
+      "changePosition": "Изменить позицию"
     },
     "mainData": {
       "addProperty": "Добавить недвижимость",

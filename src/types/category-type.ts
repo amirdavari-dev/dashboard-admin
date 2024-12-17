@@ -13,6 +13,7 @@ export type CategoryProps ={
     }
 }
 export type ModalType ={
+    isClose? : boolean
     isOpen:boolean,
     open:Function,
     title:string,
