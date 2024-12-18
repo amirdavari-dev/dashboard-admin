@@ -2,6 +2,7 @@ import { LuBedDouble, LuCloudRain } from "react-icons/lu";
 import property from "@/assets/images/prop.png";
 import { BsArrowsMove } from "react-icons/bs";
 import { ImgsPropType } from "@/types/addPropertyType";
+// import { Link } from "react-router-dom";
 // import { MdEuro, MdOutlineCurrencyRuble } from "react-icons/md";
 type PropertyType = {
   title: string;
@@ -107,7 +108,7 @@ const Property = ({
           </div>
         </div>
         {/* <div className="px-2 mt-1 flex justify-between items-center">
-          <Link to="/">View</Link>
+          <Link to="/">Edit</Link>
           <button>Delete</button>
         </div> */}
       </div>

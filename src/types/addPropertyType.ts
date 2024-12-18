@@ -46,7 +46,7 @@ export type ImgsPropType = {
   file_name: string;
   property_id: number;
 };
-export type GetRealEstatesType = {
+export type PropItemType = {
   area: string;
   bathroom: number;
   bed_room: number;
@@ -55,8 +55,9 @@ export type GetRealEstatesType = {
   location: string;
   metrage: number;
   price: number;
-  tag: string;
   title: string;
   type: string;
-  // typeMoney : "dollar" | "ruble" | "euro"
-}[];
+};
+export type GetRealEstatesType = {
+  realEstates: Promise<PropItemType[]>;
+};

@@ -72,7 +72,8 @@
       "maxBath" : "Max Bath",
       "maxBeds" : "Max Beds",
       "maxFloor" : "Max Floor",
-      "maxSqt" : "Max Sqt"
+      "maxSqt" : "Max Sqt",
+      "typeSelected" : "Type Selected"
 
     },
     "submitForms":{
