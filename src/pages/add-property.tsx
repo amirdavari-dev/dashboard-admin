@@ -696,7 +696,7 @@ const AddProperty = () => {
                     />
                   </div>
                 </div>
-                {errors.maxSqt && errors.maxSqt.type === "required" && (
+                {errors.sqt && errors.sqt.type === "required" && (
                   <AlertValidation>
                     {t("properties.submitForms.addProperty.sqtReqError")}
                   </AlertValidation>
@@ -1173,7 +1173,7 @@ const AddProperty = () => {
                       {t("properties.submitForms.addProperty.bathsLengthError")}
                     </AlertValidation>
                   )} */}
-                {errors.mapLink && errors.mapLink.type === "required" && (
+                {errors.floor && errors.floor.type === "required" && (
                   <AlertValidation>
                     {t("properties.submitForms.addProperty.floorReqError")}
                   </AlertValidation>
