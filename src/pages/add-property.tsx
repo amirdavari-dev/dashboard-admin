@@ -535,7 +535,6 @@ const AddProperty = () => {
 
                     <input
                       {...register("maxBaths", {
-                        required: true,
                         maxLength: 1,
                         minLength: 1,
                       })}
@@ -593,7 +592,6 @@ const AddProperty = () => {
 
                       <input
                         {...register("maxBeds", {
-                          required: true,
                           maxLength: 1,
                           minLength: 1,
                         })}
@@ -686,7 +684,6 @@ const AddProperty = () => {
                     <br />
                     <input
                       {...register("maxSqt", {
-                        required: true,
                         minLength: 2,
                         maxLength: 3,
                       })}
@@ -719,7 +716,7 @@ const AddProperty = () => {
                 >
                   <SelectTrigger className="w-full mt-3">
                     {locationValue === 0 ? 
-                    t("properties.crudProperty.location"): locationValue}
+                    t("properties.crudProperty.location"): locationValue.toUpperCase()}
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     <SelectGroup>
@@ -1156,7 +1153,6 @@ const AddProperty = () => {
                     <br />
                     <input
                       {...register("maxFloor", {
-                        required: true,
                         maxLength: 2,
                         minLength: 1,
                       })}
@@ -1166,13 +1162,7 @@ const AddProperty = () => {
                     />
                   </div>
                 </div>
-                {/* {errors.maxFloor &&
-                  (errors.maxFloor.type === "maxLength" ||
-                    errors.maxFloor.type === "minLength") && (
-                    <AlertValidation>
-                      {t("properties.submitForms.addProperty.bathsLengthError")}
-                    </AlertValidation>
-                  )} */}
+                
                 {errors.floor && errors.floor.type === "required" && (
                   <AlertValidation>
                     {t("properties.submitForms.addProperty.floorReqError")}
