@@ -546,22 +546,10 @@ const AddProperty = () => {
                   </div>
                 </div>
                 {errors.baths && errors.baths.type === "required" && (
-                  <AlertValidation>
+                  <AlertValidation>                    
                     {t("properties.submitForms.addProperty.bathsReqError")}
                   </AlertValidation>
                 )}
-                {errors.maxBaths && errors.maxBaths.type === "required" && (
-                  <AlertValidation>
-                    {t("properties.submitForms.addProperty.bathsReqError")}
-                  </AlertValidation>
-                )}
-                {errors.baths &&
-                  (errors.baths.type === "maxLength" ||
-                    errors.baths.type === "minLength") && (
-                    <AlertValidation>
-                      {t("properties.submitForms.addProperty.bathsLengthError")}
-                    </AlertValidation>
-                  )}
               </div>
               {/* beds */}
               {typePropertyValue === "project" && (
@@ -615,28 +603,11 @@ const AddProperty = () => {
                       />
                     </div>
                   </div>
-                  {errors.baths && errors.baths.type === "required" && (
-                    <AlertValidation>
-                      {t("properties.submitForms.addProperty.bathsReqError")}
-                    </AlertValidation>
-                  )}
-                  {errors.maxBaths && errors.maxBaths.type === "required" && (
-                    <AlertValidation>
-                      {t("properties.submitForms.addProperty.bathsReqError")}
-                    </AlertValidation>
-                  )}
-                  {errors.baths &&
-                    errors.maxBaths &&
-                    (errors.baths.type === "maxLength" ||
-                      errors.baths.type === "minLength" ||
-                      errors.maxBaths.type === "maxLength" ||
-                      errors.maxBaths.type === "minLength") && (
-                      <AlertValidation>
-                        {t(
-                          "properties.submitForms.addProperty.bathsLengthError"
-                        )}
-                      </AlertValidation>
-                    )}
+                  {errors.beds && errors.beds.type === "required" && (
+                  <AlertValidation>                    
+                    {t("properties.submitForms.addProperty.bedsReqError")}
+                  </AlertValidation>
+                )}
                 </div>
               )}
               {typePropertyValue === "defaultProperty" && (
@@ -747,7 +718,8 @@ const AddProperty = () => {
                   }}
                 >
                   <SelectTrigger className="w-full mt-3">
-                    {t("properties.crudProperty.location")}
+                    {locationValue === 0 ? 
+                    t("properties.crudProperty.location"): locationValue}
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     <SelectGroup>
@@ -1095,7 +1067,7 @@ const AddProperty = () => {
                 </div>
                 {errors.distSea && errors.distSea.type === "required" && (
                   <AlertValidation>
-                    {t("properties.submitForms.addProperty.distSeaReqError")}
+                    {t("properties.submitForms.addProperty.distanceReqError")}
                   </AlertValidation>
                 )}
               </div>
@@ -1194,13 +1166,13 @@ const AddProperty = () => {
                     />
                   </div>
                 </div>
-                {errors.maxFloor &&
+                {/* {errors.maxFloor &&
                   (errors.maxFloor.type === "maxLength" ||
                     errors.maxFloor.type === "minLength") && (
                     <AlertValidation>
                       {t("properties.submitForms.addProperty.bathsLengthError")}
                     </AlertValidation>
-                  )}
+                  )} */}
                 {errors.mapLink && errors.mapLink.type === "required" && (
                   <AlertValidation>
                     {t("properties.submitForms.addProperty.floorReqError")}
@@ -1315,7 +1287,6 @@ const AddProperty = () => {
                   </div>
                 </div>
               </div>
-
               {/* furnished */}
               <div className="col-span-12 lg:col-span-4 formItem">
                 <label className="dark:text-white" htmlFor="">
